@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AFTER 관리자 매뉴얼 v3.2</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{
+            --blue:#1a56db;--purple:#7c3aed;--green:#059669;--orange:#d97706;
+            --red:#dc2626;--gray:#6b7280;--light:#f8fafc;--border:#e5e7eb;
+        }
+        body{font-family:'Noto Sans KR',sans-serif;line-height:1.8;color:#1e293b;background:#f1f5f9;font-size:14px}
+        a{color:var(--blue);text-decoration:none}
+        a:hover{text-decoration:underline}
+
+        /* ── 레이아웃 ── */
+        .page-wrap{max-width:900px;margin:0 auto;padding:0 20px 80px}
+
+        /* ── 표지 ── */
+        .cover{
+            min-height:100vh;display:flex;flex-direction:column;
+            justify-content:center;align-items:center;text-align:center;
+            background:linear-gradient(135deg,#1a56db 0%,#7c3aed 100%);
+            color:#fff;padding:60px 40px;
+            page-break-after:always;
+        }
+        .cover-badge{
+            background:rgba(255,255,255,.2);border:2px solid rgba(255,255,255,.4);
+            border-radius:40px;padding:8px 24px;font-size:13px;font-weight:600;
+            letter-spacing:2px;margin-bottom:32px;
+        }
+        .cover h1{font-size:72px;font-weight:900;letter-spacing:-2px;margin-bottom:12px;text-shadow:0 4px 12px rgba(0,0,0,.2)}
+        .cover-sub{font-size:22px;font-weight:500;opacity:.9;margin-bottom:48px}
+        .cover-meta{font-size:15px;line-height:2.2;opacity:.85}
+        .cover-meta strong{color:#fde68a}
+        .cover-divider{width:60px;height:3px;background:rgba(255,255,255,.4);margin:32px auto}
+
+        /* ── 목차 ── */
+        .toc-wrap{background:#fff;border-radius:20px;padding:40px;margin:32px 0;box-shadow:0 2px 12px rgba(0,0,0,.08)}
+        .toc-wrap h2{font-size:22px;font-weight:700;color:var(--blue);margin-bottom:24px;padding-bottom:12px;border-bottom:3px solid var(--blue)}
+        .toc-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+        @media(max-width:600px){.toc-grid{grid-template-columns:1fr}}
+        .toc-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:10px;cursor:pointer;transition:.2s;text-decoration:none;color:#374151}
+        .toc-item:hover{background:var(--light);color:var(--blue);text-decoration:none}
+        .toc-num{width:28px;height:28px;background:var(--blue);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+        .toc-label{font-size:14px;font-weight:500}
+
+        /* ── 섹션 ── */
+        section{background:#fff;border-radius:20px;padding:40px;margin:24px 0;box-shadow:0 2px 12px rgba(0,0,0,.06);page-break-inside:avoid}
+        section h1{font-size:26px;font-weight:900;color:var(--blue);margin-bottom:28px;padding-bottom:14px;border-bottom:3px solid var(--blue);display:flex;align-items:center;gap:10px}
+        section h1 .sec-icon{font-size:28px}
+        section h2{font-size:18px;font-weight:700;color:#1e293b;margin:28px 0 14px;padding-left:14px;border-left:4px solid var(--blue)}
+        section h3{font-size:15px;font-weight:700;color:#374151;margin:20px 0 10px}
+        section p{color:#4b5563;margin-bottom:12px}
+        section ul,section ol{color:#4b5563;padding-left:22px;margin:10px 0}
+        section li{margin-bottom:6px}
+
+        /* ── 알림 박스 ── */
+        .box{border-radius:12px;padding:18px 20px;margin:16px 0;border-left:4px solid}
+        .box-title{font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+        .box.tip{background:#eff6ff;border-color:var(--blue)}.box.tip .box-title{color:var(--blue)}
+        .box.warn{background:#fffbeb;border-color:var(--orange)}.box.warn .box-title{color:var(--orange)}
+        .box.danger{background:#fef2f2;border-color:var(--red)}.box.danger .box-title{color:var(--red)}
+        .box.success{background:#f0fdf4;border-color:var(--green)}.box.success .box-title{color:var(--green)}
+        .box.purple{background:#f5f3ff;border-color:var(--purple)}.box.purple .box-title{color:var(--purple)}
+
+        /* ── 단계 카드 ── */
+        .steps{display:flex;flex-direction:column;gap:12px;margin:16px 0}
+        .step-card{display:flex;gap:16px;align-items:flex-start;background:var(--light);border-radius:12px;padding:16px 18px;border:1px solid var(--border)}
+        .step-num{width:32px;height:32px;background:var(--blue);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0;margin-top:2px}
+        .step-body h4{font-size:14px;font-weight:700;color:#1e293b;margin-bottom:6px}
+        .step-body p,.step-body li{font-size:13px;color:#4b5563}
+
+        /* ── 표 ── */
+        table{width:100%;border-collapse:collapse;margin:16px 0;font-size:13px}
+        th{background:var(--blue);color:#fff;padding:12px 14px;text-align:left;font-weight:600}
+        td{padding:10px 14px;border-bottom:1px solid var(--border);color:#374151}
+        tr:nth-child(even) td{background:#fafafa}
+        tr:hover td{background:#eff6ff}
+
+        /* ── 코드 ── */
+        code{background:#1e293b;color:#a5f3fc;padding:2px 8px;border-radius:6px;font-family:'Consolas',monospace;font-size:12px}
+        pre{background:#1e293b;color:#e2e8f0;padding:20px;border-radius:12px;overflow-x:auto;margin:16px 0;font-family:'Consolas',monospace;font-size:12px;line-height:1.7}
+
+        /* ── 뱃지 ── */
+        .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;margin:0 3px}
+        .badge-blue{background:#dbeafe;color:var(--blue)}
+        .badge-green{background:#d1fae5;color:var(--green)}
+        .badge-orange{background:#fef3c7;color:var(--orange)}
+        .badge-red{background:#fee2e2;color:var(--red)}
+        .badge-purple{background:#f5f3ff;color:var(--purple)}
+
+        /* ── 2단 그리드 ── */
+        .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0}
+        @media(max-width:600px){.grid2{grid-template-columns:1fr}}
+        .mini-card{background:var(--light);border:1px solid var(--border);border-radius:12px;padding:16px}
+        .mini-card h4{font-size:13px;font-weight:700;color:#1e293b;margin-bottom:8px}
+        .mini-card p{font-size:12px;color:#4b5563;margin:0}
+
+        /* ── 인쇄 버튼 ── */
+        .print-btn{
+            position:fixed;bottom:28px;right:28px;
+            background:linear-gradient(135deg,var(--blue),var(--purple));
+            color:#fff;border:none;padding:14px 24px;border-radius:50px;
+            font-size:14px;font-weight:700;cursor:pointer;
+            box-shadow:0 6px 20px rgba(26,86,219,.35);
+            transition:.2s;z-index:999;display:flex;align-items:center;gap:8px;
+        }
+        .print-btn:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(26,86,219,.45)}
+
+        /* ── 인쇄 ── */
+        @media print{
+            body{background:#fff}
+            .print-btn{display:none}
+            section,table,.step-card,.box{page-break-inside:avoid}
+            section{box-shadow:none;border:1px solid #e5e7eb;margin:12px 0}
+            .cover{page-break-after:always}
+        }
+    </style>
+</head>
+<body>
+
+<!-- ======================== 표지 ======================== -->
+<div class="cover">
+    <div class="cover-badge">ADMINISTRATOR MANUAL</div>
+    <h1>AFTER</h1>
+    <div class="cover-sub">관리자 매뉴얼</div>
+    <div class="cover-divider"></div>
+    <div class="cover-meta">
+        <p>AI 기반 교사 업무 도우미 시스템</p>
+        <p><strong>버전 3.2</strong> &nbsp;|&nbsp; 최종 수정: 2026년 4월 21일</p>
+        <p>본 매뉴얼은 시스템 관리자 전용입니다</p>
+    </div>
+</div>
+
+<div class="page-wrap">
+
+<!-- ======================== 목차 ======================== -->
+<div class="toc-wrap">
+    <h2>📋 목차</h2>
+    <div class="toc-grid">
+        <a href="#s1" class="toc-item"><span class="toc-num">1</span><span class="toc-label">시스템 개요 및 관리자 권한</span></a>
+        <a href="#s2" class="toc-item"><span class="toc-num">2</span><span class="toc-label">관리자 로그인</span></a>
+        <a href="#s3" class="toc-item"><span class="toc-num">3</span><span class="toc-label">회원 가입 신청 승인</span></a>
+        <a href="#s4" class="toc-item"><span class="toc-num">4</span><span class="toc-label">회원 관리 (조회·수정·삭제)</span></a>
+        <a href="#s5" class="toc-item"><span class="toc-num">5</span><span class="toc-label">VIP·포인트 관리</span></a>
+        <a href="#s6" class="toc-item"><span class="toc-num">6</span><span class="toc-label">Gemini AI API 키 관리</span></a>
+        <a href="#s7" class="toc-item"><span class="toc-num">7</span><span class="toc-label">서식 자료실 관리</span></a>
+        <a href="#s9" class="toc-item"><span class="toc-num">8</span><span class="toc-label">게시판·공지사항 관리</span></a>
+        <a href="#s10" class="toc-item"><span class="toc-num">9</span><span class="toc-label">백업 및 복원</span></a>
+        <a href="#s11" class="toc-item"><span class="toc-num">10</span><span class="toc-label">문제 해결 및 FAQ</span></a>
+    </div>
+</div>
+
+<!-- ======================== 1. 개요 ======================== -->
+<section id="s1">
+    <h1><span class="sec-icon">🏫</span>1. 시스템 개요 및 관리자 권한</h1>
+
+    <h2>1.1 AFTER 시스템 소개</h2>
+    <p><strong>AFTER</strong>(Assistant For Teachers' Educational Requirements)는 경상남도 중·고등학교 교감 선생님의 행정 업무를 AI로 지원하는 웹 시스템입니다. Google Gemini API를 활용한 자연어 질의응답, 1,800개 이상의 서식 자료실, 회원 관리, 게시판 등 다양한 기능을 제공합니다.</p>
+
+    <div class="grid2">
+        <div class="mini-card">
+            <h4>🤖 AI 질문/답변</h4>
+            <p>자연어 질문 → Gemini 답변 + 관련 서식 다운로드 버튼 자동 제공</p>
+        </div>
+        <div class="mini-card">
+            <h4>📁 서식 자료실</h4>
+            <p>8개 부서별 HWP·PDF·XLSX 등 1,800+ 서식 관리</p>
+        </div>
+        <div class="mini-card">
+            <h4>👥 회원 관리</h4>
+            <p>가입 승인 2단계 프로세스, VIP·포인트 설정</p>
+        </div>
+        <div class="mini-card">
+            <h4>💾 백업/복원</h4>
+            <p>전체 DB JSON 백업, 클라우드 저장, 복원 지원</p>
+        </div>
+    </div>
+
+    <h2>1.2 관리자 권한 범위</h2>
+    <table>
+        <thead><tr><th>기능</th><th>관리자</th><th>일반회원</th><th>비로그인</th></tr></thead>
+        <tbody>
+            <tr><td>가입 신청 확인·승인·거부</td><td>✅</td><td>❌</td><td>❌</td></tr>
+            <tr><td>회원 정보 조회·수정·삭제</td><td>✅</td><td>본인만</td><td>❌</td></tr>
+            <tr><td>VIP 등급 설정</td><td>✅</td><td>❌</td><td>❌</td></tr>
+            <tr><td>포인트 수동 조정</td><td>✅</td><td>❌</td><td>❌</td></tr>
+            <tr><td>서식 등록·수정·삭제</td><td>✅</td><td>❌</td><td>❌</td></tr>
+            <tr><td>대량 서식 업로드</td><td>✅</td><td>❌</td><td>❌</td></tr>
+            <tr><td>공지사항 작성</td><td>✅</td><td>❌</td><td>❌</td></tr>
+            <tr><td>게시판 답변(관리자 전용)</td><td>✅</td><td>❌</td><td>❌</td></tr>
+            <tr><td>게시판 글 삭제</td><td>✅</td><td>본인 글만</td><td>❌</td></tr>
+            <tr><td>DB 전체 백업·복원</td><td>✅</td><td>❌</td><td>❌</td></tr>
+            <tr><td>AI API 키 설정</td><td>✅</td><td>❌</td><td>❌</td></tr>
+        </tbody>
+    </table>
+
+    <h2>1.3 접속 URL</h2>
+    <div class="box tip">
+        <div class="box-title">🔗 배포 URL</div>
+        <p>Publish 탭에서 배포 후 발급되는 <strong>vip.gensparksite.com</strong> 주소를 사용하세요.</p>
+        <p>미리보기 URL은 개발자 전용이며 다른 사람은 접속할 수 없습니다.</p>
+    </div>
+</section>
+
+<!-- ======================== 2. 로그인 ======================== -->
+<section id="s2">
+    <h1><span class="sec-icon">🔐</span>2. 관리자 로그인</h1>
+
+    <h2>2.1 관리자 계정 정보</h2>
+    <table>
+        <thead><tr><th>항목</th><th>값</th><th>비고</th></tr></thead>
+        <tbody>
+            <tr><td>아이디</td><td><code>daqdaegarie</code></td><td>변경 불가 (코드 내 고정)</td></tr>
+            <tr><td>비밀번호</td><td><code>admin</code></td><td>기본값 — 변경 권장</td></tr>
+            <tr><td>역할</td><td>최고 관리자</td><td>모든 권한 보유</td></tr>
+        </tbody>
+    </table>
+
+    <div class="box warn">
+        <div class="box-title">⚠️ 보안 주의</div>
+        <p>기본 비밀번호(<code>admin</code>)는 노출 위험이 있습니다. <code>js/auth.js</code> 내 <code>ADMIN_PW</code> 상수를 변경하고 재배포하세요.</p>
+    </div>
+
+    <h2>2.2 로그인 절차</h2>
+    <div class="steps">
+        <div class="step-card"><div class="step-num">1</div><div class="step-body"><h4>사이트 접속</h4><p>배포 URL에 접속합니다.</p></div></div>
+        <div class="step-card"><div class="step-num">2</div><div class="step-body"><h4>상단 우측 "로그인" 클릭</h4><p>로그인 모달이 열립니다.</p></div></div>
+        <div class="step-card"><div class="step-num">3</div><div class="step-body"><h4>관리자 아이디/비밀번호 입력 → 로그인</h4><p>아이디: <code>daqdaegarie</code> / 비밀번호: <code>admin</code></p></div></div>
+        <div class="step-card"><div class="step-num">4</div><div class="step-body"><h4>관리자 탭 확인</h4><p>로그인 성공 시 사이드바에 <strong>"관리자 모드"</strong> 버튼이 활성화됩니다. 클릭하면 관리자 패널이 열립니다.</p></div></div>
+    </div>
+
+    <h2>2.3 관리자 패널 탭 구성</h2>
+    <table>
+        <thead><tr><th>탭</th><th>기능</th></tr></thead>
+        <tbody>
+            <tr><td>👥 회원 관리</td><td>가입 신청 승인, 회원 목록 조회·수정·삭제</td></tr>
+            <tr><td>📢 공지사항</td><td>공지 작성·수정·삭제</td></tr>
+            <tr><td>📤 사용자 업로드</td><td>사용자가 업로드한 서식 승인·반려</td></tr>
+            <tr><td>📁 서식 관리</td><td>단건/다중 서식 등록</td></tr>
+            <tr><td>🔑 AI 설정</td><td>Gemini API 키 입력·저장</td></tr>
+            <tr><td>💾 백업/복원</td><td>전체 백업, 클라우드 이력 조회</td></tr>
+        </tbody>
+    </table>
+</section>
+
+<!-- ======================== 3. 가입 승인 ======================== -->
+<section id="s3">
+    <h1><span class="sec-icon">✅</span>3. 회원 가입 신청 승인</h1>
+
+    <h2>3.1 2단계 가입 프로세스</h2>
+    <p>보안을 위해 회원가입은 <strong>2단계</strong>로 처리됩니다. 직접 users 테이블에 쓰는 대신, 먼저 <code>signup_requests</code> 임시 테이블에 저장된 후 관리자 승인 시 <code>users</code> 테이블로 이동합니다.</p>
+
+    <div class="box purple">
+        <div class="box-title">🔄 전체 흐름</div>
+        <p>① 사용자: 회원가입 폼 작성 → <code>signup_requests</code> 저장 (status: pending)</p>
+        <p>② 관리자: 패널에서 신청 목록 확인 → 승인 또는 거부</p>
+        <p>③ 승인 시: <code>users</code> 테이블로 이동 + 1,000포인트 자동 지급 + 승인일 기준 1개월 후 만료일 설정</p>
+        <p>④ 거부 시: <code>signup_requests</code>에서 삭제</p>
+    </div>
+
+    <h2>3.2 승인 절차</h2>
+    <div class="steps">
+        <div class="step-card"><div class="step-num">1</div><div class="step-body"><h4>관리자 패널 열기</h4><p>사이드바 → "관리자 모드" 클릭</p></div></div>
+        <div class="step-card"><div class="step-num">2</div><div class="step-body"><h4>"👥 회원 관리" 탭 클릭</h4><p>상단에 <strong>"⏳ 가입 신청 승인 대기 (N건)"</strong> 박스가 표시됩니다.</p></div></div>
+        <div class="step-card"><div class="step-num">3</div><div class="step-body">
+            <h4>신청자 정보 확인</h4>
+            <ul>
+                <li>아이디, 이름, 이메일, 학교명, 신청 일시</li>
+                <li>학교 소속 여부를 확인하여 가짜 가입 방지</li>
+            </ul>
+        </div></div>
+        <div class="step-card"><div class="step-num">4</div><div class="step-body">
+            <h4>승인 또는 거부</h4>
+            <p><strong>✅ 승인</strong>: "승인" 버튼 클릭 → users 테이블로 이동, 1,000P 지급, 1개월 만료일 설정</p>
+            <p><strong>❌ 거부</strong>: "거부" 버튼 클릭 → signup_requests에서 삭제</p>
+        </div></div>
+    </div>
+
+    <div class="box success">
+        <div class="box-title">✅ 승인 완료 후</div>
+        <p>사용자는 즉시 로그인 가능하며 초기 <strong>1,000 포인트</strong>가 자동으로 부여됩니다. (서식 다운로드 100회 또는 AI 질문 200회 분량)</p>
+    </div>
+
+    <h2>3.3 가입 신청 목록 필드</h2>
+    <table>
+        <thead><tr><th>필드</th><th>설명</th></tr></thead>
+        <tbody>
+            <tr><td>아이디</td><td>신청한 로그인 아이디 (4~20자 영문/숫자)</td></tr>
+            <tr><td>이름</td><td>실명</td></tr>
+            <tr><td>이메일</td><td>연락용 이메일</td></tr>
+            <tr><td>학교</td><td>소속 학교명</td></tr>
+            <tr><td>신청일시</td><td>가입 신청 시각 (한국 시간)</td></tr>
+            <tr><td>상태</td><td>pending (대기) / approved / rejected</td></tr>
+        </tbody>
+    </table>
+</section>
+
+<!-- ======================== 4. 회원 관리 ======================== -->
+<section id="s4">
+    <h1><span class="sec-icon">👥</span>4. 회원 관리 (조회·수정·삭제)</h1>
+
+    <h2>4.1 회원 목록 보기</h2>
+    <p>가입 신청 대기 박스 아래에 승인된 전체 회원 카드 목록이 표시됩니다.</p>
+    <ul>
+        <li><span class="badge badge-orange">⏳ 대기</span> 미승인 계정은 상단에 우선 정렬</li>
+        <li><span class="badge badge-green">✅ 승인</span> 승인된 계정은 아래에 표시</li>
+        <li><span class="badge badge-purple">👑 VIP</span> VIP 계정은 자주색 테두리</li>
+    </ul>
+
+    <h2>4.2 회원 정보 수정</h2>
+    <div class="steps">
+        <div class="step-card"><div class="step-num">1</div><div class="step-body"><h4>수정할 회원 카드에서 "✏️ 수정" 버튼 클릭</h4></div></div>
+        <div class="step-card"><div class="step-num">2</div><div class="step-body">
+            <h4>편집 가능 항목 수정</h4>
+            <ul>
+                <li>이름, 이메일, 학교명</li>
+                <li>승인 상태 (승인됨 / 미승인)</li>
+                <li>역할 (일반 회원 / 관리자)</li>
+                <li>포인트 수동 조정</li>
+            </ul>
+        </div></div>
+        <div class="step-card"><div class="step-num">3</div><div class="step-body"><h4>"저장" 버튼 클릭</h4><p>변경사항이 즉시 반영됩니다.</p></div></div>
+    </div>
+
+    <h2>4.3 승인 취소 / 강제 탈퇴</h2>
+    <table>
+        <thead><tr><th>버튼</th><th>동작</th><th>주의</th></tr></thead>
+        <tbody>
+            <tr><td>승인 취소</td><td>approved → false 변경, 로그인 불가</td><td>데이터 유지됨</td></tr>
+            <tr><td>강제 탈퇴</td><td>users 테이블에서 완전 삭제</td><td>복구 불가</td></tr>
+        </tbody>
+    </table>
+
+    <div class="box danger">
+        <div class="box-title">🚨 강제 탈퇴 주의</div>
+        <p>강제 탈퇴는 회원 데이터가 DB에서 영구 삭제됩니다. 반드시 백업 후 진행하세요.</p>
+    </div>
+</section>
+
+<!-- ======================== 5. VIP·포인트 ======================== -->
+<section id="s5">
+    <h1><span class="sec-icon">⭐</span>5. VIP·포인트 관리</h1>
+
+    <h2>5.1 포인트 시스템</h2>
+    <table>
+        <thead><tr><th>이벤트</th><th>변동</th><th>비고</th></tr></thead>
+        <tbody>
+            <tr><td>회원 승인</td><td>+1,000 P</td><td>자동 지급</td></tr>
+            <tr><td>서식 다운로드</td><td>−10 P</td><td>VIP는 무료</td></tr>
+            <tr><td>AI 질문</td><td>−5 P</td><td>VIP는 무료</td></tr>
+            <tr><td>포인트 부족</td><td>0P 이하</td><td>기능 제한</td></tr>
+        </tbody>
+    </table>
+
+    <h2>5.2 포인트 수동 조정</h2>
+    <div class="steps">
+        <div class="step-card"><div class="step-num">1</div><div class="step-body"><h4>회원 카드 → "✏️ 수정" 클릭</h4></div></div>
+        <div class="step-card"><div class="step-num">2</div><div class="step-body"><h4>포인트 입력란에 새 값 입력</h4><p>현재 포인트 표시 → 원하는 값으로 직접 변경</p></div></div>
+        <div class="step-card"><div class="step-num">3</div><div class="step-body"><h4>"저장" 클릭</h4></div></div>
+    </div>
+
+    <h2>5.3 VIP 등급 설정</h2>
+    <p>VIP 회원은 포인트 차감 없이 모든 기능을 무제한 사용할 수 있습니다.</p>
+    <div class="steps">
+        <div class="step-card"><div class="step-num">1</div><div class="step-body"><h4>회원 카드 → "⭐ VIP 설정" 버튼 클릭</h4></div></div>
+        <div class="step-card"><div class="step-num">2</div><div class="step-body"><h4>확인 팝업에서 확인 클릭</h4><p>vip = true, 만료일 자동 설정</p></div></div>
+    </div>
+
+    <div class="box tip">
+        <div class="box-title">💡 VIP 해제</div>
+        <p>VIP 회원 카드에서 <strong>"VIP 해제"</strong> 버튼을 클릭하면 일반 회원으로 변경됩니다.</p>
+    </div>
+
+    <div class="box warn">
+        <div class="box-title">⚠️ 학기 초 포인트 충전 권장</div>
+        <p>학기 초에 전체 회원에게 포인트를 일괄 충전하거나 VIP를 설정하여 업무 중단을 방지하세요.</p>
+    </div>
+</section>
+
+<!-- ======================== 6. AI API ======================== -->
+<section id="s6">
+    <h1><span class="sec-icon">🤖</span>6. Gemini AI API 키 관리</h1>
+
+    <h2>6.1 API 키 필요 이유</h2>
+    <p>AFTER의 AI 질문 기능은 Google Gemini API를 사용합니다. API 키 없이는 AI 기능이 전혀 작동하지 않습니다.</p>
+
+    <div class="box danger">
+        <div class="box-title">🚨 최우선 설정 항목</div>
+        <p>배포 후 <strong>가장 먼저</strong> API 키를 설정하세요. 설정 전에는 모든 사용자의 AI 질문이 차단됩니다.</p>
+    </div>
+
+    <h2>6.2 무료 API 키 발급</h2>
+    <div class="steps">
+        <div class="step-card"><div class="step-num">1</div><div class="step-body">
+            <h4>Google AI Studio 접속</h4>
+            <p><a href="https://aistudio.google.com/app/apikey" target="_blank">https://aistudio.google.com/app/apikey</a></p>
+            <p>Google 계정으로 로그인 필요</p>
+        </div></div>
+        <div class="step-card"><div class="step-num">2</div><div class="step-body"><h4>"Create API key" 클릭 → 키 복사</h4><p>형태 예시: <code>AIzaSy...</code></p></div></div>
+        <div class="step-card"><div class="step-num">3</div><div class="step-body"><h4>관리자 패널 → "🔑 AI 설정" 탭</h4><p>API 키 입력란에 붙여넣기 → <strong>"저장하고 연결하기"</strong> 클릭</p></div></div>
+        <div class="step-card"><div class="step-num">4</div><div class="step-body"><h4>연결 테스트</h4><p>"연결 테스트" 버튼 클릭 → "AI 연결 성공" 메시지 확인</p></div></div>
+    </div>
+
+    <h2>6.3 무료 사용 한도</h2>
+    <table>
+        <thead><tr><th>항목</th><th>무료 한도</th></tr></thead>
+        <tbody>
+            <tr><td>분당 요청</td><td>15회</td></tr>
+            <tr><td>일일 요청</td><td>1,500회</td></tr>
+            <tr><td>모델</td><td>gemini-1.5-flash (기본)</td></tr>
+        </tbody>
+    </table>
+
+    <div class="box tip">
+        <div class="box-title">💡 한도 초과 시</div>
+        <p>일시적으로 AI 기능이 차단됩니다. 내일 0시(UTC) 이후 자동 초기화됩니다. 사용량이 많다면 <a href="https://ai.google.dev/pricing" target="_blank">유료 플랜</a> 을 검토하세요.</p>
+    </div>
+</section>
+
+<!-- ======================== 7. 서식 자료실 ======================== -->
+<section id="s7">
+    <h1><span class="sec-icon">📁</span>7. 서식 자료실 관리</h1>
+
+    <h2>7.1 부서 구성</h2>
+    <table>
+        <thead><tr><th>부서</th><th>주요 서식</th></tr></thead>
+        <tbody>
+            <tr><td>🎓 교감업무</td><td>교감 관련 공문·결재 서식</td></tr>
+            <tr><td>📚 교무부</td><td>출결·성적·학사일정</td></tr>
+            <tr><td>✏️ 과정·평가부</td><td>교육과정·평가계획</td></tr>
+            <tr><td>🔬 연구부</td><td>연구학교·프로젝트</td></tr>
+            <tr><td>💚 인성부</td><td>학생 생활지도·상담</td></tr>
+            <tr><td>💻 정보부</td><td>정보시스템·홈페이지</td></tr>
+            <tr><td>🧪 과학영재수학환경부</td><td>과학실 운영·영재교육</td></tr>
+            <tr><td>⚽ 체육·안전부</td><td>체육 행사·안전 점검</td></tr>
+        </tbody>
+    </table>
+
+    <h2>7.2 서식 단건 등록</h2>
+    <div class="steps">
+        <div class="step-card"><div class="step-num">1</div><div class="step-body"><h4>자료실 탭 → 우측 하단 "서식 추가하기" 버튼 클릭</h4></div></div>
+        <div class="step-card"><div class="step-num">2</div><div class="step-body">
+            <h4>정보 입력</h4>
+            <ul><li>부서 선택, 서식명, 설명(선택), 파일 첨부</li></ul>
+        </div></div>
+        <div class="step-card"><div class="step-num">3</div><div class="step-body"><h4>"저장" 버튼 클릭</h4><p>900KB 초과 파일은 자동으로 청크 분할 저장됩니다.</p></div></div>
+    </div>
+
+    <h2>7.3 서식 수정·삭제</h2>
+    <ul>
+        <li><strong>수정</strong>: 서식 카드 → "✏️ 수정" 클릭 → 항목 수정 → 저장</li>
+        <li><strong>삭제</strong>: 서식 카드 → "🗑️ 삭제" 클릭 → 확인</li>
+    </ul>
+    <div class="box warn">
+        <div class="box-title">⚠️ 삭제 전 주의</div>
+        <p>삭제된 서식과 첨부 파일은 복구할 수 없습니다. 반드시 전체 백업 후 진행하세요.</p>
+    </div>
+
+    <h2>7.4 자료실 지원 형식</h2>
+    <p>HWP, HWPX, PDF, DOCX, DOC, XLSX, XLS, PPTX, PPT (파일 크기 제한 없음)</p>
+
+    <div class="box tip">
+        <div class="box-title">💡 lazy loading 방식</div>
+        <p>자료실 최초 접속 시 전체 건수만 표시하고, 부서 버튼을 클릭할 때 해당 부서 파일만 로드합니다. 전체 로딩 시간이 크게 단축됩니다.</p>
+    </div>
+</section>
+
+<!-- ======================== 9. 게시판·공지 ======================== -->
+<section id="s9">
+    <h1><span class="sec-icon">📋</span>9. 게시판·공지사항 관리</h1>
+
+    <h2>9.1 공지사항 작성</h2>
+    <div class="steps">
+        <div class="step-card"><div class="step-num">1</div><div class="step-body"><h4>관리자 패널 → "📢 공지사항" 탭</h4></div></div>
+        <div class="step-card"><div class="step-num">2</div><div class="step-body"><h4>제목·내용 입력, 활성화 여부 선택 → "저장"</h4></div></div>
+        <div class="step-card"><div class="step-num">3</div><div class="step-body"><h4>게시판 상단 공지 고정 영역에 즉시 표시</h4></div></div>
+    </div>
+
+    <h2>9.2 게시글 관리자 답변 달기</h2>
+    <p>관리자는 게시판 게시글에 <strong>공식 답변</strong>을 달 수 있습니다. 답변은 모든 사용자에게 표시되며 파란색 박스로 강조됩니다.</p>
+    <div class="steps">
+        <div class="step-card"><div class="step-num">1</div><div class="step-body"><h4>게시판 → 답변할 게시글 클릭</h4></div></div>
+        <div class="step-card"><div class="step-num">2</div><div class="step-body"><h4>하단 "관리자 답변 작성" 영역에 내용 입력</h4><p>관리자 로그인 상태에서만 이 영역이 표시됩니다.</p></div></div>
+        <div class="step-card"><div class="step-num">3</div><div class="step-body"><h4>"답변 등록" 버튼 클릭 → 즉시 반영</h4></div></div>
+    </div>
+
+    <div class="box tip">
+        <div class="box-title">💡 답변 수정·삭제</div>
+        <p>답변 박스 우측의 <strong>"✏️ 수정"</strong> 또는 <strong>"🗑️ 삭제"</strong> 버튼을 클릭합니다. (관리자 전용)</p>
+    </div>
+
+    <h2>9.3 비밀글 처리 정책</h2>
+    <table>
+        <thead><tr><th>구분</th><th>일반 사용자</th><th>관리자</th><th>작성자 본인</th></tr></thead>
+        <tbody>
+            <tr><td>비밀글 목록</td><td>제목만 표시 (🔒 아이콘)</td><td>전체 표시</td><td>전체 표시</td></tr>
+            <tr><td>비밀글 본문</td><td>접근 불가</td><td>열람 가능</td><td>열람 가능</td></tr>
+            <tr><td>비밀글 답변</td><td>관리자 답변도 숨김</td><td>작성·수정·삭제 가능</td><td>관리자 답변 열람 가능</td></tr>
+        </tbody>
+    </table>
+
+    <h2>9.4 게시판 검색 기능</h2>
+    <p>게시판 상단 검색창에서 제목, 내용, 관리자 답변 텍스트로 통합 검색이 가능합니다. 검색어는 목록에서 노란색으로 하이라이트됩니다.</p>
+    <ul>
+        <li>비밀글은 검색 시 제목만 매칭 (내용 비공개 유지)</li>
+        <li>관리자 답변 내용도 검색 결과에 포함되며 미리보기에 파란색 박스로 표시</li>
+    </ul>
+
+    <h2>9.5 부적절한 게시글 삭제</h2>
+    <div class="steps">
+        <div class="step-card"><div class="step-num">1</div><div class="step-body"><h4>게시글 목록에서 해당 게시글의 🗑️ 버튼 클릭</h4></div></div>
+        <div class="step-card"><div class="step-num">2</div><div class="step-body"><h4>확인 팝업 → 확인 클릭</h4><p>삭제 후 자동으로 목록 새로고침</p></div></div>
+    </div>
+</section>
+
+<!-- ======================== 10. 백업·복원 ======================== -->
+<section id="s10">
+    <h1><span class="sec-icon">💾</span>10. 백업 및 복원</h1>
+
+    <h2>10.1 백업해야 하는 시점</h2>
+    <div class="box danger">
+        <div class="box-title">🚨 필수 백업 시점</div>
+        <ul>
+            <li>서식 파일 대량 추가 <strong>전</strong></li>
+            <li>시스템 업데이트 배포 <strong>전</strong></li>
+            <li>학기 초·학기 말</li>
+            <li>회원 데이터 대량 수정 <strong>전</strong></li>
+        </ul>
+    </div>
+
+    <h2>10.2 전체 백업 방법</h2>
+    <div class="steps">
+        <div class="step-card"><div class="step-num">1</div><div class="step-body"><h4>관리자 패널 → "💾 백업/복원" 탭</h4></div></div>
+        <div class="step-card"><div class="step-num">2</div><div class="step-body"><h4>"전체 백업 (모든 테이블)" 버튼 클릭</h4></div></div>
+        <div class="step-card"><div class="step-num">3</div><div class="step-body"><h4>진행률 바 완료 확인</h4><p>백업 대상: users, notices, board_posts, chat_history, base_forms, user_forms, ai_feedback, app_config</p></div></div>
+        <div class="step-card"><div class="step-num">4</div><div class="step-body"><h4>JSON 파일 자동 다운로드 + 클라우드 자동 저장</h4><p>파일명 예: <code>AFTER_fullbackup_20260421_153045.json</code></p></div></div>
+    </div>
+
+    <div class="box tip">
+        <div class="box-title">💡 file_data 제외</div>
+        <p>실제 첨부 파일 데이터(<code>file_data</code>)는 용량이 크기 때문에 백업 파일에 포함되지 않습니다. 복원 후 관리자 패널 → 서식DB 탭에서 파일을 다시 업로드하세요.</p>
+    </div>
+
+    <h2>10.3 클라우드 백업 이력 조회</h2>
+    <p>백업/복원 탭 하단 "☁️ 클라우드 백업 이력" 섹션에서 최근 30건의 백업 이력을 조회할 수 있습니다. 각 항목에서 다운로드가 가능합니다.</p>
+
+    <h2>10.4 복원 방법</h2>
+    <div class="steps">
+        <div class="step-card"><div class="step-num">1</div><div class="step-body"><h4>배포 URL + <code>/restore.html</code> 접속</h4></div></div>
+        <div class="step-card"><div class="step-num">2</div><div class="step-body"><h4>관리자 비밀번호 입력</h4></div></div>
+        <div class="step-card"><div class="step-num">3</div><div class="step-body"><h4>백업 JSON 파일 업로드</h4></div></div>
+        <div class="step-card"><div class="step-num">4</div><div class="step-body">
+            <h4>복원 방식 선택</h4>
+            <p><strong>비우고 복구</strong>: 기존 데이터 모두 삭제 후 교체 (권장 — 충돌 없음)</p>
+            <p><strong>추가 복구</strong>: 기존 유지 + 백업 데이터 추가 (중복 가능)</p>
+        </div></div>
+        <div class="step-card"><div class="step-num">5</div><div class="step-body"><h4>복원 실행 → "복구 완료!" 확인</h4><p>복원 중 페이지 새로고침·이탈 금지</p></div></div>
+    </div>
+</section>
+
+<!-- ======================== 11. FAQ ======================== -->
+<section id="s11">
+    <h1><span class="sec-icon">❓</span>11. 문제 해결 및 FAQ</h1>
+
+    <h2>11.1 자주 발생하는 오류</h2>
+
+    <h3>❌ 회원가입 시 401 오류</h3>
+    <div class="box danger">
+        <div class="box-title">원인</div>
+        <p>GenSpark Table API는 비인증 사용자의 users 테이블 직접 쓰기를 차단합니다.</p>
+    </div>
+    <p><strong>해결</strong>: 이미 <code>signup_requests</code> 임시 테이블 방식으로 변경 완료됨. 배포 URL에서만 동작하며, 미리보기 URL에서는 일부 제한이 있을 수 있습니다.</p>
+
+    <h3>❌ AI 질문이 작동하지 않음</h3>
+    <p><strong>해결</strong>: 관리자 패널 → AI 설정 → API 키 입력 여부 확인. 키가 있으면 "연결 테스트"로 유효성 확인. 한도 초과 시 내일 재시도.</p>
+
+    <h3>❌ 복원 후 서식이 표시되지 않음</h3>
+    <p><strong>해결</strong>: 백업에는 file_data가 없습니다. 관리자 패널 → 서식DB 탭에서 파일을 다시 업로드하세요. 메타데이터는 복원됩니다.</p>
+
+    <h3>❌ 게시판 답변이 표시되지 않음</h3>
+    <p><strong>해결</strong>: 관리자 로그인 상태 확인. 게시글 상세 화면 하단에 "관리자 답변 작성" 영역이 보여야 합니다. 로그아웃 상태에서는 이미 등록된 답변만 보입니다.</p>
+
+    <h2>11.2 FAQ</h2>
+    <table>
+        <thead><tr><th>질문</th><th>답변</th></tr></thead>
+        <tbody>
+            <tr><td>관리자 비밀번호 변경 가능?</td><td><code>js/auth.js</code>의 <code>ADMIN_PW</code> 상수를 수정하고 재배포</td></tr>
+            <tr><td>다중 관리자 지원?</td><td>현재 단일 관리자 계정만 지원. 향후 업데이트 예정</td></tr>
+            <tr><td>서식 파일 크기 제한?</td><td>제한 없음 — 모든 용량 정상 처리</td></tr>
+            <tr><td>백업 권장 주기?</td><td>최소 주 1회, 대량 작업 전후 필수</td></tr>
+            <tr><td>포인트 초기 지급량?</td><td>승인 시 자동 1,000P (다운로드 100회 또는 AI 질문 200회)</td></tr>
+            <tr><td>클라우드 백업 보관 기간?</td><td>최근 30건 유지 (그 이전 자동 관리)</td></tr>
+            <tr><td>모바일 관리자 패널 사용?</td><td>가능하나 PC 환경 권장</td></tr>
+        </tbody>
+    </table>
+
+    <h2>11.3 긴급 복구 순서</h2>
+    <div class="box danger">
+        <div class="box-title">🚨 데이터 손실 발생 시</div>
+        <ol>
+            <li><code>/restore.html</code> 접속</li>
+            <li>가장 최근 백업 파일 업로드</li>
+            <li>"비우고 복구" 선택 후 실행</li>
+            <li>자료실·회원 정보 정상 여부 확인</li>
+            <li>관리자 패널 → 서식DB 탭에서 파일 재업로드</li>
+        </ol>
+    </div>
+
+    <h2>11.4 배포 후 초기 설정 체크리스트</h2>
+    <table>
+        <thead><tr><th>순서</th><th>작업</th><th>확인</th></tr></thead>
+        <tbody>
+            <tr><td>1</td><td>관리자 로그인 확인</td><td>☐</td></tr>
+            <tr><td>2</td><td>Gemini API 키 입력 및 연결 테스트</td><td>☐</td></tr>
+            <tr><td>3</td><td>base_forms 데이터 복원 (restore.html)</td><td>☐</td></tr>
+            <tr><td>4</td><td>자료실 서식 표시 확인</td><td>☐</td></tr>
+            <tr><td>5</td><td>AI 질문 테스트</td><td>☐</td></tr>
+            <tr><td>6</td><td>회원가입 테스트 (다른 브라우저)</td><td>☐</td></tr>
+            <tr><td>7</td><td>전체 백업 실행</td><td>☐</td></tr>
+        </tbody>
+    </table>
+
+    <div class="box success">
+        <div class="box-title">✅ 정상 운영 확인</div>
+        <p>모든 체크리스트를 완료했다면 AFTER 시스템이 정상적으로 운영되고 있습니다. 주기적인 백업과 회원 관리로 안정적인 서비스를 유지하세요.</p>
+    </div>
+</section>
+
+</div><!-- /page-wrap -->
+
+<!-- PDF 저장 버튼 -->
+<button class="print-btn no-print" onclick="window.print()">🖨️ PDF로 저장</button>
+
+<script>
+document.querySelectorAll('.toc-item').forEach(item => {
+    item.addEventListener('click', function(e) {
+        e.preventDefault();
+        const href = this.getAttribute('href');
+        const target = document.querySelector(href);
+        if (target) target.scrollIntoView({behavior:'smooth', block:'start'});
+    });
+});
+</script>
+<script src="https://www.genspark.ai/sandbox_inspect.js"></script></body>
+</html>
