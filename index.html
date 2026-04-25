@@ -1,0 +1,2484 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#1a56db">
+    <title>AFTER – Assistant For Teachers' Educational Requirements</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- 스플래시 -->
+<div id="splash-screen">
+    <div class="splash-content">
+        <div class="splash-logo">
+            <div class="logo-icon after-logo-icon">A</div>
+            <h1 class="splash-title">AFTER</h1>
+            <p class="splash-subtitle">Assistant For Teachers' Educational Requirements</p>
+            <p class="splash-subtitle2">AI 기반 교사 업무 도우미</p>
+        </div>
+        <div class="splash-loader">
+            <div class="loader-bar"><div class="loader-fill"></div></div>
+            <p class="loader-text">서비스 준비 중...</p>
+        </div>
+        <p class="splash-credit">Produced by 김정석</p>
+    </div>
+</div>
+
+<!-- 메인 앱 -->
+<div id="app" class="hidden">
+
+    <!-- 좌측 세로 네비 사이드바 -->
+    <nav class="left-sidebar">
+        <div class="ls-logo">
+            <span class="ls-emoji after-logo-small">A</span>
+            <span class="ls-title">AFTER</span>
+        </div>
+        <div class="ls-menu">
+            <button class="nav-item active" data-page="home">
+                <i class="fas fa-home"></i><span>홈</span>
+            </button>
+            <button class="nav-item" data-page="question">
+                <i class="fas fa-comments"></i><span>질문</span>
+            </button>
+            <button class="nav-item" data-page="forms">
+                <i class="fas fa-folder-open"></i><span>자료실</span>
+            </button>
+            <button class="nav-item" data-page="history">
+                <i class="fas fa-history"></i><span>히스토리</span>
+            </button>
+            <button class="nav-item" data-page="board">
+                <i class="fas fa-comments"></i><span>게시판</span>
+            </button>
+            <button class="nav-item" data-page="settings" id="nav-settings" style="display:none;">
+                <i class="fas fa-robot"></i><span>AI설정</span>
+            </button>
+            <button class="nav-item nav-item-manual" id="btn-manual" onclick="openManualModal()">
+                <i class="fas fa-book-open"></i><span>매뉴얼</span>
+            </button>
+            <div class="ls-divider"></div>
+            <button class="nav-item nav-item-admin" id="btn-admin-mode">
+                <i class="fas fa-shield-alt"></i><span>관리자</span>
+            </button>
+        </div>
+        <div class="ls-footer">
+            <span id="ls-ai-dot" class="ls-ai-dot off"></span>
+            <span id="ls-ai-label">AI 미연결</span>
+        </div>
+    </nav>
+
+    <!-- 헤더 -->
+    <header class="app-header">
+        <div class="header-inner">
+            <div class="header-left">
+                <button id="menu-btn" class="icon-btn" style="display:none;"><i class="fas fa-bars"></i></button>
+                <div class="header-logo">
+                    <span class="header-emoji after-logo-header">A</span>
+                    <div class="header-title-wrap">
+                        <span class="header-title">AFTER</span>
+                        <span class="header-subtitle">Assistant For Teachers' Educational Requirements</span>
+                        <span class="header-copyright">개발자: 김정석 &nbsp;·&nbsp; 모든 권리는 내꺼에요 ^^</span>
+                    </div>
+                </div>
+            </div>
+            <div class="header-right">
+                <!-- 로그인 상태 -->
+                <div id="login-status-btn" class="login-status-btn" onclick="openLoginModal()">
+                    <i class="fas fa-user-circle"></i>
+                    <span id="login-status-text">로그인</span>
+                </div>
+                <!-- 회원가입 버튼 (비로그인 시만 표시) -->
+                <button id="header-signup-btn" class="header-signup-btn" onclick="openRegisterModal()" title="회원가입">
+                    <i class="fas fa-user-plus"></i>
+                    <span>회원가입</span>
+                </button>
+                <!-- AI 상태 표시 -->
+                <div id="ai-status-badge" class="ai-status-badge ai-off" style="cursor:default;">
+                    <i class="fas fa-robot"></i>
+                    <span id="ai-status-text">AI 설정</span>
+                </div>
+                <button class="icon-btn" id="help-btn"><i class="fas fa-question-circle"></i></button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 사이드 메뉴 -->
+    <div id="side-menu" class="side-menu hidden">
+        <div class="side-menu-header">
+            <span class="side-menu-title">📋 메뉴</span>
+            <button id="close-menu" class="icon-btn"><i class="fas fa-times"></i></button>
+        </div>
+        <nav class="side-nav">
+            <a href="#" class="side-nav-item active" data-page="home"><i class="fas fa-home"></i> 홈</a>
+            <a href="#" class="side-nav-item" data-page="history"><i class="fas fa-history"></i> 질문 히스토리</a>
+            <a href="#" class="side-nav-item" data-page="forms"><i class="fas fa-file-alt"></i> 서식 자료실</a>
+            <a href="#" class="side-nav-item" data-page="board"><i class="fas fa-comments"></i> 커뮤니티 게시판</a>
+            <div class="side-nav-divider"></div>
+            <a href="#" class="side-nav-item" onclick="closeMenu();openManualModal();return false;"><i class="fas fa-book-open"></i> 매뉴얼</a>
+            <a href="#" class="side-nav-item" data-page="settings"><i class="fas fa-robot"></i> AI 설정 (API 키)</a>
+        </nav>
+        <div class="side-menu-footer">
+            <p>경상남도교육청 지원</p>
+            <p class="version">v3.0 AFTER Edition</p>
+        </div>
+    </div>
+    <div id="overlay" class="overlay hidden"></div>
+
+    <!-- 메인 콘텐츠 -->
+    <main class="main-content">
+
+        <!-- ===== 홈 ===== -->
+        <div id="page-home" class="page active">
+            <!-- 공지사항 티커 (홈 상단) -->
+            <div class="notice-ticker-wrap" id="notice-ticker-wrap" style="display:none;">
+                <span class="notice-ticker-label"><i class="fas fa-bullhorn"></i> 공지</span>
+                <div class="notice-ticker-track">
+                    <div class="notice-ticker-inner" id="notice-ticker-inner"></div>
+                </div>
+            </div>
+
+            <!-- 홈 2컬럼 레이아웃 -->
+            <div class="home-two-col">
+
+                <!-- ▌왼쪽: 기존 홈 콘텐츠 -->
+                <div class="home-left-col">
+                    <div class="home-hero home-hero--compact">
+                        <div class="hero-badge">✨ AI 기반 교사 업무 도우미 – AFTER</div>
+                        <h2 class="hero-title">무엇이 궁금하신가요?</h2>
+                    </div>
+
+                    <!-- 이용 만료일 경고 배너 -->
+                    <div id="expiry-warning-container"></div>
+
+                    <!-- AI 키 미설정 경고 -->
+                    <div id="api-warning" class="api-warning hidden">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <div>
+                            <p class="api-warning-title">AI 연결이 필요합니다</p>
+                            <p class="api-warning-desc">관리자가 Gemini API 키를 아직 설정하지 않았습니다.</p>
+                        </div>
+                    </div>
+
+                    <div class="quick-cards">
+                        <div class="quick-card" data-dept="교감업무"><div class="qc-icon bg-blue">🏫</div><div class="qc-content"><p class="qc-title">교감업무</p><p class="qc-desc">학교 운영 · 교직원 관리</p></div><i class="fas fa-chevron-right qc-arrow"></i></div>
+                        <div class="quick-card" data-dept="교무부"><div class="qc-icon bg-green">📚</div><div class="qc-content"><p class="qc-title">교무부</p><p class="qc-desc">수업 · 시간표 · 성적</p></div><i class="fas fa-chevron-right qc-arrow"></i></div>
+                        <div class="quick-card" data-dept="과정평가부"><div class="qc-icon bg-purple">📝</div><div class="qc-content"><p class="qc-title">과정평가부</p><p class="qc-desc">교육과정 · 평가계획</p></div><i class="fas fa-chevron-right qc-arrow"></i></div>
+                        <div class="quick-card" data-dept="연구부"><div class="qc-icon bg-orange">🔬</div><div class="qc-content"><p class="qc-title">연구부</p><p class="qc-desc">연수 · 장학 · 컨설팅</p></div><i class="fas fa-chevron-right qc-arrow"></i></div>
+                        <div class="quick-card" data-dept="인성부"><div class="qc-icon bg-pink">💛</div><div class="qc-content"><p class="qc-title">인성부</p><p class="qc-desc">생활지도 · 상담 · 학폭</p></div><i class="fas fa-chevron-right qc-arrow"></i></div>
+                        <div class="quick-card" data-dept="정보부"><div class="qc-icon bg-cyan">💻</div><div class="qc-content"><p class="qc-title">정보부</p><p class="qc-desc">정보보안 · 개인정보</p></div><i class="fas fa-chevron-right qc-arrow"></i></div>
+                        <div class="quick-card" data-dept="과학영재수학환경부"><div class="qc-icon bg-teal">🧪</div><div class="qc-content"><p class="qc-title">과학영재수학환경부</p><p class="qc-desc">과학교육 · 영재교육 · 수학교육</p></div><i class="fas fa-chevron-right qc-arrow"></i></div>
+                        <div class="quick-card" data-dept="체육안전부"><div class="qc-icon bg-red">⚽</div><div class="qc-content"><p class="qc-title">체육안전부</p><p class="qc-desc">체육행사 · 안전교육</p></div><i class="fas fa-chevron-right qc-arrow"></i></div>
+                    </div>
+
+                    <!-- 매뉴얼 빠른 링크 -->
+                    <div class="manual-quick-section">
+                        <h3 class="section-title"><i class="fas fa-book-open"></i> 매뉴얼</h3>
+                        <div class="manual-quick-cards">
+                            <button class="manual-quick-card user-card" onclick="openManualModal('user')">
+                                <span class="mqc-icon">📖</span>
+                                <div class="mqc-content">
+                                    <p class="mqc-title">사용자 매뉴얼</p>
+                                    <p class="mqc-desc">AI 질문 · 자료실 · 게시판 이용법</p>
+                                </div>
+                                <i class="fas fa-chevron-right mqc-arrow"></i>
+                            </button>
+                            <button class="manual-quick-card admin-card" id="home-admin-manual-card" onclick="openManualModal('admin')" style="display:none;">
+                                <span class="mqc-icon">🛡️</span>
+                                <div class="mqc-content">
+                                    <p class="mqc-title">관리자 매뉴얼</p>
+                                    <p class="mqc-desc">회원 승인 · 자료실 관리 · 백업</p>
+                                </div>
+                                <i class="fas fa-chevron-right mqc-arrow"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="recent-section">
+                        <h3 class="section-title"><i class="fas fa-clock"></i> 최근 질문</h3>
+                        <div id="recent-list" class="recent-list">
+                            <div class="empty-state"><i class="fas fa-comment-dots"></i><p>아직 질문 내역이 없습니다</p></div>
+                        </div>
+                    </div>
+                </div><!-- /home-left-col -->
+
+                <!-- ▌오른쪽: 접속 중인 회원 패널 -->
+                <div class="home-right-col" id="home-right-col">
+                    <div class="online-panel">
+                        <div class="online-panel-header">
+                            <span class="online-panel-title">
+                                <span class="online-dot-live"></span>
+                                접속 중인 회원
+                            </span>
+                            <span class="online-count-badge" id="online-count-badge">0</span>
+                        </div>
+                        <!-- 쪽지함 버튼 (로그인 시 표시) -->
+                        <div class="online-panel-note-row" id="online-panel-note-row" style="display:none;">
+                            <button class="note-inbox-btn" onclick="openNoteInbox()">
+                                <i class="fas fa-envelope"></i> 쪽지함
+                                <span class="note-unread-badge hidden" id="note-unread-badge">0</span>
+                            </button>
+                        </div>
+                        <!-- 회원 목록 -->
+                        <div class="online-users-list" id="online-users-list">
+                            <div class="online-empty">로그인하면 접속 중인 회원을 볼 수 있습니다.</div>
+                        </div>
+                        <!-- 마지막 갱신 시각 -->
+                        <div class="online-refresh-row">
+                            <span id="online-last-update" style="font-size:10px;color:#94a3b8;">-</span>
+                            <button onclick="loadOnlineUsers(true)" style="background:none;border:none;cursor:pointer;color:#94a3b8;font-size:11px;" title="새로고침">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div><!-- /home-right-col -->
+
+            </div><!-- /home-two-col -->
+        </div>
+
+        <!-- ===== 질문 입력 ===== -->
+        <div id="page-question" class="page hidden">
+            <div class="page-header">
+                <button class="back-btn" id="back-to-home"><i class="fas fa-arrow-left"></i> 돌아가기</button>
+                <h2 class="page-title">질문하기</h2>
+                <!-- 우측 대화 이력 드롭다운 -->
+                <div class="hist-dropdown-wrap" id="hist-dropdown-wrap">
+                    <button class="hist-dropdown-btn" id="hist-dropdown-btn" title="이전 대화 목록">
+                        <i class="fas fa-history"></i> 이전 대화
+                        <i class="fas fa-chevron-down hist-arrow" id="hist-arrow"></i>
+                    </button>
+                    <div class="hist-dropdown-list hidden" id="hist-dropdown-list"></div>
+                </div>
+            </div>
+
+            <div class="section-card">
+                <div class="section-label"><span class="step-badge">STEP 1</span><span>업무 영역을 선택해주세요</span></div>
+                <div class="select-wrapper">
+                    <select id="dept-select" class="dept-select">
+                        <option value="">-- 부서를 선택하세요 --</option>
+                        <option value="교감업무">🏫 교감업무</option>
+                        <option value="교무부">📚 교무부</option>
+                        <option value="과정평가부">📝 과정평가부</option>
+                        <option value="연구부">🔬 연구부</option>
+                        <option value="인성부">💛 인성부</option>
+                        <option value="정보부">💻 정보부</option>
+                        <option value="과학영재수학환경부">🧪 과학영재수학환경부</option>
+                        <option value="체육안전부">⚽ 체육안전부</option>
+                    </select>
+                    <i class="fas fa-chevron-down select-icon"></i>
+                </div>
+                <div id="dept-info" class="dept-info hidden">
+                    <div class="dept-info-icon" id="dept-info-icon"></div>
+                    <div class="dept-info-text">
+                        <p class="dept-info-name" id="dept-info-name"></p>
+                        <p class="dept-info-desc" id="dept-info-desc"></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-card" id="question-card" style="opacity:0.5;pointer-events:none;">
+                <div class="section-label"><span class="step-badge">STEP 2</span><span>질문 사항을 입력해주세요</span></div>
+
+                <!-- 키워드 직접 입력 (선택사항) -->
+                <div class="kw-input-wrap">
+                    <div class="kw-input-header">
+                        <i class="fas fa-tags kw-icon"></i>
+                        <span class="kw-label">🔑 핵심 키워드 입력 <span class="kw-optional">(선택사항, 최대 3개)</span></span>
+                    </div>
+                    <p class="kw-hint">키워드를 직접 입력하시면 답변의 질이 높아지고, 관련 자료 다운로드도 더 밀접한 자료가 보여집니다.</p>
+                    <div class="kw-chips-row">
+                        <div class="kw-chip-wrap">
+                            <input type="text" id="kw-input-1" class="kw-chip-input" placeholder="키워드 1" maxlength="15">
+                            <button class="kw-chip-clear" onclick="clearKwInput(1)" title="지우기"><i class="fas fa-times"></i></button>
+                        </div>
+                        <div class="kw-chip-wrap">
+                            <input type="text" id="kw-input-2" class="kw-chip-input" placeholder="키워드 2" maxlength="15">
+                            <button class="kw-chip-clear" onclick="clearKwInput(2)" title="지우기"><i class="fas fa-times"></i></button>
+                        </div>
+                        <div class="kw-chip-wrap">
+                            <input type="text" id="kw-input-3" class="kw-chip-input" placeholder="키워드 3" maxlength="15">
+                            <button class="kw-chip-clear" onclick="clearKwInput(3)" title="지우기"><i class="fas fa-times"></i></button>
+                        </div>
+                    </div>
+                    <div id="kw-preview" class="kw-preview hidden"></div>
+                </div>
+
+                <div class="question-tip">
+                    <i class="fas fa-lightbulb"></i>
+                    <div class="tip-content">
+                        <p class="tip-title">💡 질문 잘하는 방법</p>
+                        <p class="tip-text">상황과 배경을 구체적으로 설명할수록 AI가 더 정확한 답변을 드립니다!</p>
+                        <div class="tip-example">
+                            <span class="tip-bad">❌ 나쁜 예:</span> "학폭 어떻게 해요?"<br>
+                            <span class="tip-good">✅ 좋은 예:</span> "학교폭력 사건이 접수되었을 때 교감으로서 처음 해야 할 절차와 학교폭력대책심의위원회 개최 요건, 필요한 서류가 무엇인지 알려주세요."
+                        </div>
+                    </div>
+                </div>
+                <textarea id="question-input" class="question-textarea"
+                    placeholder="예) 신규 교원 임용 후 학교 적응을 위한 멘토링 프로그램 운영 시 역할과 관련 공문 처리 방법을 알려주세요."
+                    rows="5"></textarea>
+                <!-- 질문 파일 첨부 영역 -->
+                <div id="q-file-preview" class="q-file-preview hidden">
+                    <i class="fas fa-paperclip"></i>
+                    <span id="q-file-name"></span>
+                    <span id="q-file-size" class="chat-file-size"></span>
+                    <button id="q-file-remove" class="chat-file-remove" title="파일 제거"><i class="fas fa-times"></i></button>
+                </div>
+                <!-- 검색 모드 토글 -->
+                <div class="search-mode-row">
+                    <span class="search-mode-label"><i class="fas fa-database"></i> 검색 범위</span>
+                    <div class="search-mode-toggle" id="search-mode-toggle">
+                        <button class="smode-btn smode-fast active" id="smode-fast" onclick="setSearchMode('fast')" title="선택한 부서 데이터만 검색 (빠름)">
+                            <i class="fas fa-bolt"></i> 빠른 검색
+                        </button>
+                        <button class="smode-btn smode-precise" id="smode-precise" onclick="setSearchMode('precise')" title="전체 부서 데이터 모두 검색 (정밀)">
+                            <i class="fas fa-search-plus"></i> 정밀 검색
+                        </button>
+                    </div>
+                    <span class="search-mode-desc" id="search-mode-desc">선택 부서 DB만 검색 · 빠른 응답</span>
+                </div>
+                <div class="question-actions">
+                    <span class="char-count" id="char-count">0 / 500자</span>
+                    <div style="display:flex;gap:8px;align-items:center;">
+                        <button class="btn-attach-q" id="btn-attach-q" title="파일 첨부 (PDF, 이미지, 문서)">
+                            <i class="fas fa-paperclip"></i> 파일 첨부
+                        </button>
+                        <input type="file" id="q-file-input" class="hidden"
+                            accept=".pdf,.txt,.xlsx,.xls,.docx,.doc,.pptx,.ppt,.png,.jpg,.jpeg,.gif,.webp">
+                        <button class="btn-primary" id="submit-question" disabled>
+                            <i class="fas fa-paper-plane"></i> AI에게 질문하기
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== 질문 확인 ===== -->
+        <div id="page-confirm" class="page hidden">
+            <div class="page-header">
+                <button class="back-btn" id="back-to-question"><i class="fas fa-arrow-left"></i> 돌아가기</button>
+                <h2 class="page-title">질문 확인</h2>
+            </div>
+
+            <div id="analyzing-anim" class="analyzing-container">
+                <div class="analyzing-icon">🤖</div>
+                <p class="analyzing-text">질문을 분석하고 있습니다...</p>
+                <div class="analyzing-dots"><span></span><span></span><span></span></div>
+                <div class="analyzing-steps">
+                    <div class="a-step active" id="a-step1"><i class="fas fa-circle"></i> 질문 파악 중...</div>
+                    <div class="a-step" id="a-step2"><i class="fas fa-circle"></i> 데이터베이스 검색 중...</div>
+                    <div class="a-step" id="a-step3"><i class="fas fa-circle"></i> 요약 생성 중...</div>
+                </div>
+            </div>
+
+            <div id="summary-result" class="hidden">
+                <div class="summary-card">
+                    <div class="summary-header">
+                        <span class="summary-badge">📋 질문 요약</span>
+                        <span class="summary-dept" id="summary-dept-tag"></span>
+                    </div>
+                    <div class="summary-body">
+                        <div class="summary-item">
+                            <span class="summary-label">🎯 핵심 키워드</span>
+                            <div id="summary-keywords" class="keyword-tags"></div>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">📝 내 질문 원문</span>
+                            <p id="summary-original" class="summary-original"></p>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">🤖 AI 요약</span>
+                            <p id="summary-text" class="summary-text"></p>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">🔍 검색 범위</span>
+                            <div class="source-list">
+                                <span class="source-tag source-0" id="confirm-mode-badge">⚡ 빠른 검색 (선택 부서만)</span>
+                                <span class="source-tag source-1">② 경남교육청 지침</span>
+                                <span class="source-tag source-2">③ 교육부 자료</span>
+                                <span class="source-tag source-3">④ 웹 검색</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <p class="confirm-question">이 내용으로 답변을 받으시겠습니까?</p>
+                <div class="confirm-buttons">
+                    <button class="btn-confirm-correct" id="btn-correct"><i class="fas fa-robot"></i> AI 답변 받기</button>
+                    <button class="btn-confirm-edit" id="btn-edit"><i class="fas fa-edit"></i> 질문 수정하기</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== AI 답변 화면 ===== -->
+        <div id="page-answer" class="page hidden">
+            <div class="page-header">
+                <button class="back-btn" id="back-to-confirm"><i class="fas fa-arrow-left"></i> 돌아가기</button>
+                <h2 class="page-title">AI 답변</h2>
+                <!-- 우측 대화 이력 드롭다운 (답변 화면에도) -->
+                <div class="hist-dropdown-wrap" id="hist-dropdown-wrap-ans">
+                    <button class="hist-dropdown-btn" id="hist-dropdown-btn-ans" title="이전 대화 목록">
+                        <i class="fas fa-history"></i> 이전 대화
+                        <i class="fas fa-chevron-down hist-arrow" id="hist-arrow-ans"></i>
+                    </button>
+                    <div class="hist-dropdown-list hidden" id="hist-dropdown-list-ans"></div>
+                </div>
+            </div>
+
+            <div id="answer-loading" class="answer-loading hidden">
+                <div class="ai-loading-card">
+                    <div class="ai-loading-header">
+                        <div class="ai-spinner">🤖</div>
+                        <div>
+                            <p class="ai-loading-title">AI가 답변을 생성하고 있습니다</p>
+                            <p class="ai-loading-sub" id="ai-loading-sub">데이터베이스 검색 중...</p>
+                        </div>
+                    </div>
+                    <div class="source-checking">
+                        <div class="source-check-item" id="sc1"><i class="fas fa-circle"></i><span>① 로컬 DB 및 자료실 파일 분석</span></div>
+                        <div class="source-check-item" id="sc2"><i class="fas fa-circle"></i><span>② 경남교육청 지침 및 고시</span></div>
+                        <div class="source-check-item" id="sc3"><i class="fas fa-circle"></i><span>③ 교육부 발간 자료</span></div>
+                        <div class="source-check-item" id="sc4"><i class="fas fa-circle"></i><span>④ 웹 검색 및 AI 종합</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="answer-content" class="hidden">
+                <div class="answer-header-card">
+                    <div class="answer-dept-badge" id="answer-dept-badge"></div>
+                    <h3 class="answer-question-title" id="answer-q-title"></h3>
+                    <div class="answer-meta">
+                        <span class="answer-source-badge"><i class="fas fa-robot"></i> Gemini AI 답변</span>
+                        <span class="answer-time" id="answer-time"></span>
+                    </div>
+                </div>
+
+                <div class="ai-answer-card">
+                    <div id="ai-answer-body" class="ai-answer-body"></div>
+                </div>
+
+                <!-- 관련 서식 섹션: AI 본문 인라인 버튼으로 통합 → 이 박스는 숨김 유지 -->
+                <div id="related-forms-section" class="hidden" aria-hidden="true"></div>
+
+                <!-- 빠른 검색 힌트 배너 (빠른 검색 모드일 때만 표시) -->
+                <div id="fast-search-hint" class="fast-search-hint hidden">
+                    <i class="fas fa-lightbulb"></i>
+                    원하는 답변이 없으신가요?&nbsp;
+                    <strong>정밀 검색</strong>으로 전체 부서 자료를 검색해보세요.
+                    <button class="fsh-btn" onclick="switchToPreciseAndRetry()">
+                        <i class="fas fa-search-plus"></i> 정밀 검색으로 다시 묻기
+                    </button>
+                </div>
+
+                <div class="answer-actions">
+                    <button class="btn-action" id="btn-print"><i class="fas fa-print"></i> 인쇄</button>
+                    <button class="btn-action" id="btn-copy"><i class="fas fa-copy"></i> 복사</button>
+                    <button class="btn-action btn-new-question" id="btn-new-q"><i class="fas fa-plus"></i> 새 질문</button>
+                    <button class="btn-action" id="btn-answer-home"><i class="fas fa-home"></i> 홈으로</button>
+                </div>
+
+                <div class="feedback-section" id="feedback-section">
+                    <p class="feedback-title">이 답변이 도움이 되었나요?</p>
+                    <div class="feedback-buttons" id="feedback-buttons">
+                        <button class="feedback-btn" id="fb-good" data-val="good" onclick="handleFeedback('good')">
+                            <i class="fas fa-thumbs-up"></i> 도움됨
+                        </button>
+                        <button class="feedback-btn" id="fb-bad" data-val="bad" onclick="handleFeedback('bad')">
+                            <i class="fas fa-thumbs-down"></i> 아쉬움
+                        </button>
+                    </div>
+                    <!-- 아쉬움 클릭 시 나타나는 의견 입력창 -->
+                    <div id="feedback-bad-box" class="feedback-bad-box hidden">
+                        <p class="feedback-bad-label">
+                            <i class="fas fa-comment-dots"></i>
+                            개선될 점을 말씀해주세요 <span class="feedback-optional">(선택사항)</span>
+                        </p>
+                        <textarea id="feedback-comment-input" class="feedback-comment-textarea"
+                            placeholder="예) 답변이 너무 일반적이었어요 / 우리 학교 상황에 맞는 내용이 필요해요 / 서식 파일 연결이 안 됐어요..."
+                            maxlength="500" rows="3" oninput="onFeedbackCommentInput()"></textarea>
+                        <div class="feedback-bad-actions">
+                            <span id="feedback-comment-count" class="feedback-char-count">0 / 500자</span>
+                            <button class="feedback-submit-btn" onclick="submitFeedbackComment()">
+                                <i class="fas fa-paper-plane"></i> 의견 전송
+                            </button>
+                            <button class="feedback-skip-btn" onclick="submitFeedbackComment(true)">
+                                건너뛰기
+                            </button>
+                        </div>
+                    </div>
+                    <!-- 피드백 완료 메시지 -->
+                    <div id="feedback-done-msg" class="feedback-done-msg hidden"></div>
+                </div>
+
+                <!-- ── 연속 대화 인터페이스 (Gemini 스타일) ── -->
+                <div id="chat-conversation" class="chat-conversation">
+                    <div class="chat-conv-header">
+                        <i class="fas fa-comment-dots"></i>
+                        <span>추가 질문 · 대화 이어가기</span>
+                        <span class="chat-conv-hint">위 답변에 대해 추가로 질문하거나 파일을 첨부해 분석을 요청하세요</span>
+                    </div>
+                    <div id="chat-history" class="chat-history"></div>
+                    <!-- 파일 미리보기 영역 -->
+                    <div id="chat-file-preview" class="chat-file-preview hidden">
+                        <i class="fas fa-paperclip"></i>
+                        <span id="chat-file-name">파일명</span>
+                        <span id="chat-file-size" class="chat-file-size"></span>
+                        <button id="chat-file-remove" class="chat-file-remove" title="파일 제거">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="chat-input-bar">
+                        <div class="chat-attach-wrap">
+                            <button id="chat-file-btn" class="chat-attach-btn" title="파일 첨부 (PDF, 이미지, 문서)">
+                                <i class="fas fa-paperclip"></i>
+                            </button>
+                            <div class="chat-attach-hint">
+                                비교·참고할 파일을 첨부한 뒤<br>
+                                <em>"첨부한 파일처럼 해줘."</em><br>
+                                <em>"첨부한 파일을 참고해서 ○○를 만들어줘."</em><br>
+                                라고 명령해 보세요.
+                            </div>
+                        </div>
+                        <input type="file" id="chat-file-input" class="hidden"
+                            accept=".pdf,.txt,.hwp,.hwpx,.xlsx,.xls,.docx,.doc,.pptx,.ppt,.png,.jpg,.jpeg,.gif,.webp">
+                        <textarea id="chat-input" class="chat-textarea"
+                            placeholder="답변에 대해 추가로 질문하거나 파일을 첨부해 분석을 요청하세요..."
+                            rows="2" maxlength="2000"></textarea>
+                        <button id="chat-send-btn" class="chat-send-btn" disabled>
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                    <div class="chat-input-footer">
+                        <span id="chat-char-count">0 / 2000자</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="answer-error" class="hidden">
+                <div class="error-card">
+                    <div class="error-icon">😥</div>
+                    <p class="error-title" id="error-title">오류가 발생했습니다</p>
+                    <p class="error-desc" id="error-desc"></p>
+                    <div class="error-actions">
+                        <button class="btn-primary" id="btn-retry"><i class="fas fa-redo"></i> 다시 시도</button>
+                        <button class="btn-action" id="btn-go-settings" style="margin-top:8px;"><i class="fas fa-key"></i> API 키 설정</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== AI 설정 (API 키) ===== -->
+        <div id="page-settings" class="page hidden">
+            <div class="page-header">
+                <button class="back-btn" id="back-from-settings"><i class="fas fa-arrow-left"></i> 돌아가기</button>
+                <h2 class="page-title">AI 설정</h2>
+            </div>
+
+            <div class="settings-hero">
+                <div class="settings-hero-icon">🤖</div>
+                <h3 class="settings-hero-title">Gemini AI 연결</h3>
+                <p class="settings-hero-desc">Google Gemini API 키를 입력하면<br>AI가 데이터베이스에서 검색하여<br>전문적인 답변을 제공합니다</p>
+                <div class="settings-admin-note" id="settings-admin-note">
+                    <i class="fas fa-info-circle"></i>
+                    <span>관리자가 한 번 입력한 API 키는 모든 사용자가 공유합니다.</span>
+                </div>
+            </div>
+
+            <div class="section-card">
+                <div class="api-status-row">
+                    <span class="api-status-label">현재 AI 상태</span>
+                    <span id="settings-ai-status" class="ai-status-tag ai-off-tag">연결 안 됨</span>
+                </div>
+
+                <div class="api-input-group">
+                    <label class="api-label">Gemini API 키</label>
+                    <div class="api-input-wrapper">
+                        <input type="text" id="api-key-input" class="api-input api-input-masked"
+                            placeholder="AIza로 시작하는 API 키를 입력하세요"
+                            autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+                        <button class="api-eye-btn" id="toggle-key-vis" title="키 보기/숨기기">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <p class="api-input-hint">🔒 관리자가 입력한 API 키는 클라우드에 저장되어 모든 사용자가 재입력 없이 사용합니다</p>
+                </div>
+
+                <div id="save-result-msg" class="save-result-msg hidden"></div>
+
+                <div class="api-btn-group">
+                    <button class="btn-primary" id="btn-save-key" style="width:100%;justify-content:center;">
+                        <i class="fas fa-save"></i> 저장하고 연결하기
+                    </button>
+                    <button class="btn-action" id="btn-test-key" style="margin-top:8px;width:100%;justify-content:center;">
+                        <i class="fas fa-vial"></i> 연결 테스트
+                    </button>
+                    <button class="btn-action" id="btn-list-models" style="margin-top:8px;width:100%;justify-content:center;background:#f0f9ff;color:#0369a1;border:1.5px solid #7dd3fc;">
+                        <i class="fas fa-list"></i> 사용 가능한 모델 조회
+                    </button>
+                    <button class="btn-danger" id="btn-clear-key" style="margin-top:8px;width:100%;justify-content:center;">
+                        <i class="fas fa-trash"></i> API 키 삭제
+                    </button>
+                </div>
+            </div>
+
+            <div class="section-card">
+                <h4 class="guide-title"><i class="fas fa-key"></i> API 키 무료 발급 방법</h4>
+                <div class="guide-steps">
+                    <div class="guide-step">
+                        <div class="guide-num">1</div>
+                        <div class="guide-content">
+                            <p class="guide-step-title">Google AI Studio 접속</p>
+                            <p class="guide-step-desc">aistudio.google.com 접속 (Google 계정 필요)</p>
+                        </div>
+                    </div>
+                    <div class="guide-step">
+                        <div class="guide-num">2</div>
+                        <div class="guide-content">
+                            <p class="guide-step-title">"Get API Key" 클릭</p>
+                            <p class="guide-step-desc">상단 메뉴에서 "Get API Key" → "Create API key"</p>
+                        </div>
+                    </div>
+                    <div class="guide-step">
+                        <div class="guide-num">3</div>
+                        <div class="guide-content">
+                            <p class="guide-step-title">키 복사 후 여기에 붙여넣기</p>
+                            <p class="guide-step-desc">생성된 키(AIza...로 시작)를 복사해서 위 입력란에 붙여넣기</p>
+                        </div>
+                    </div>
+                    <div class="guide-step">
+                        <div class="guide-num">4</div>
+                        <div class="guide-content">
+                            <p class="guide-step-title">무료 한도</p>
+                            <p class="guide-step-desc">무료 티어: 분당 15회, 일 1,500회 요청 가능</p>
+                        </div>
+                    </div>
+                </div>
+                <a href="https://aistudio.google.com/app/apikey" target="_blank" class="btn-link-out">
+                    <i class="fas fa-external-link-alt"></i> Google AI Studio 바로가기
+                </a>
+            </div>
+        </div>
+
+        <!-- ===== 서식 자료실 ===== -->
+        <div id="page-forms" class="page hidden">
+            <div class="page-header">
+                <button class="back-btn" id="back-from-forms"><i class="fas fa-arrow-left"></i> 돌아가기</button>
+                <h2 class="page-title">서식 자료실</h2>
+            </div>
+            <!-- 검색창 -->
+            <div class="forms-search-wrap">
+                <i class="fas fa-search forms-search-icon"></i>
+                <input type="text" id="forms-search-input" class="forms-search-input"
+                    placeholder="서식명 또는 부서로 검색..." maxlength="60" autocomplete="off">
+                <button class="forms-search-clear hidden" id="forms-search-clear">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <!-- 카운트 배지용 숨김 span (JS에서 업데이트) -->
+            <div style="display:none;">
+                <span id="cnt-all"></span>
+                <span id="cnt-교감업무"></span>
+                <span id="cnt-교무부"></span>
+                <span id="cnt-과정평가부"></span>
+                <span id="cnt-연구부"></span>
+                <span id="cnt-인성부"></span>
+                <span id="cnt-정보부"></span>
+                <span id="cnt-과학영재수학환경부"></span>
+                <span id="cnt-체육안전부"></span>
+            </div>
+            <!-- 비로그인 안내 배너 -->
+            <div class="forms-login-hint" id="forms-login-hint" style="display:none;">
+                <i class="fas fa-lock"></i>
+                <div>
+                    <strong>로그인 후 파일을 다운로드할 수 있습니다</strong>
+                    파일 목록은 누구나 볼 수 있으며, 다운로드는 승인된 회원만 가능합니다.
+                </div>
+                <button class="forms-login-hint-btn" onclick="openLoginModal()">
+                    <i class="fas fa-sign-in-alt"></i> 로그인
+                </button>
+            </div>
+            <!-- 자료실 로딩 진행률 바 -->
+            <div id="forms-load-bar-wrap" class="forms-load-bar-wrap" style="display:none;">
+                <div class="forms-load-bar-header">
+                    <span class="forms-load-bar-label"><i class="fas fa-database"></i> <span id="forms-load-bar-text">서식 목록 불러오는 중...</span></span>
+                    <span class="forms-load-bar-pct" id="forms-load-bar-pct">0%</span>
+                </div>
+                <div class="forms-load-bar-track">
+                    <div class="forms-load-bar-fill" id="forms-load-bar-fill"></div>
+                </div>
+                <div class="forms-load-bar-sub" id="forms-load-bar-sub">잠시만 기다려 주세요...</div>
+            </div>
+            <!-- 서식 통계 -->
+            <div class="forms-stats" id="forms-stats"></div>
+            <!-- 서식 목록 -->
+            <div id="forms-grid" class="forms-grid"></div>
+            <!-- 서식 추가 버튼 (고정 하단) -->
+            <button class="btn-add-form" id="btn-open-upload">
+                <i class="fas fa-plus-circle"></i> 서식 추가하기
+            </button>
+        </div>
+
+        <!-- ===== 히스토리 ===== -->
+        <div id="page-history" class="page hidden">
+            <div class="page-header">
+                <button class="back-btn" id="back-from-history"><i class="fas fa-arrow-left"></i> 돌아가기</button>
+                <h2 class="page-title"><i class="fas fa-history"></i> 질문 히스토리</h2>
+            </div>
+
+            <!-- 부서 탭 필터 -->
+            <div class="hist-dept-tabs" id="hist-dept-tabs">
+                <button class="hist-dept-tab active" data-dept="all">
+                    <i class="fas fa-layer-group"></i> 전체
+                </button>
+                <button class="hist-dept-tab" data-dept="교감업무">🏫 교감업무</button>
+                <button class="hist-dept-tab" data-dept="교무부">📚 교무부</button>
+                <button class="hist-dept-tab" data-dept="과정평가부">📝 과정평가</button>
+                <button class="hist-dept-tab" data-dept="연구부">🔬 연구부</button>
+                <button class="hist-dept-tab" data-dept="인성부">💛 인성부</button>
+                <button class="hist-dept-tab" data-dept="정보부">💻 정보부</button>
+                <button class="hist-dept-tab" data-dept="과학영재수학환경부">🧪 과학영재</button>
+                <button class="hist-dept-tab" data-dept="체육안전부">⚽ 체육안전</button>
+            </div>
+
+            <!-- 검색창 -->
+            <div class="hist-search-wrap">
+                <div class="hist-search-inner">
+                    <i class="fas fa-search hist-search-icon"></i>
+                    <input type="text" id="hist-search-input"
+                           class="hist-search-input"
+                           placeholder="제목·내용 키워드 검색 (다른 사람의 질문도 참고하세요)"
+                           autocomplete="off">
+                    <button class="hist-search-clear hidden" id="hist-search-clear">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div id="hist-search-stats" class="hist-search-stats"></div>
+            </div>
+
+            <!-- 히스토리 목록 -->
+            <div id="history-list-full" class="history-list"></div>
+        </div>
+
+        <!-- ===== 커뮤니티 게시판 ===== -->
+        <div id="page-board" class="page hidden">
+            <div class="page-header">
+                <button class="back-btn" id="back-from-board"><i class="fas fa-arrow-left"></i> 돌아가기</button>
+                <h2 class="page-title"><i class="fas fa-comments"></i> 커뮤니티 게시판</h2>
+            </div>
+
+            <!-- 게시판 공지 고정 영역 -->
+            <div id="board-pinned-notices" style="display:none;"></div>
+
+            <!-- 게시판 안내 -->
+            <div class="board-notice">
+                <i class="fas fa-info-circle"></i>
+                <p>시스템 개선을 위한 제안, 각종 문의 사항, 요청 자료 등을 올려주세요.<br>
+                <span class="board-notice-sub">✏️ 글쓰기는 로그인한 회원만 가능합니다.</span></p>
+            </div>
+
+            <!-- 게시판 검색 -->
+            <div class="board-search-wrap">
+                <i class="fas fa-search board-search-icon"></i>
+                <input type="text" id="board-search-input" class="board-search-input" placeholder="제목, 내용, 관리자 답변 검색..." oninput="boardSearchChanged()">
+                <button class="board-search-clear" id="board-search-clear" onclick="boardClearSearch()" style="display:none;"><i class="fas fa-times"></i></button>
+            </div>
+
+            <!-- 글쓰기 버튼 + 필터 -->
+            <div class="board-toolbar">
+                <div class="board-filter-group">
+                    <button class="board-filter-btn active" data-cat="all">전체</button>
+                    <button class="board-filter-btn" data-cat="general">💬 일반</button>
+                    <button class="board-filter-btn" data-cat="suggestion">💡 제안</button>
+                    <button class="board-filter-btn" data-cat="inquiry">❓ 문의</button>
+                    <button class="board-filter-btn" data-cat="request">📂 자료요청</button>
+                    <button class="board-filter-btn" data-cat="bugreport">🚨 파일오류신고</button>
+                </div>
+                <button class="btn-primary board-write-btn" id="btn-board-write"><i class="fas fa-pen"></i> 글쓰기</button>
+            </div>
+
+            <!-- 게시글 목록 -->
+            <div id="board-list" class="board-list">
+                <div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>불러오는 중...</p></div>
+            </div>
+            <div id="board-pagination" class="board-pagination"></div>
+        </div>
+
+        <!-- ===== 게시글 상세 ===== -->
+        <div id="page-board-view" class="page hidden">
+            <div class="page-header">
+                <button class="back-btn" id="back-from-board-view"><i class="fas fa-arrow-left"></i> 목록으로</button>
+                <h2 class="page-title">게시글 보기</h2>
+            </div>
+            <div id="board-view-content" class="board-view-wrap"></div>
+        </div>
+
+        <!-- ===== 게시글 작성/수정 (리디자인) ===== -->
+        <div id="page-board-write" class="page hidden">
+            <div class="page-header">
+                <button class="back-btn" id="back-from-board-write"><i class="fas fa-arrow-left"></i> 취소</button>
+                <h2 class="page-title" id="board-write-title-label">새 글 작성</h2>
+            </div>
+
+            <div class="bw-outer">
+                <!-- 카테고리 선택 카드 그리드 -->
+                <div class="bw-cat-section">
+                    <p class="bw-cat-label">카테고리 선택 <span class="required">*</span></p>
+                    <div class="bw-cat-grid">
+                        <label class="bw-cat-card" data-cat="general">
+                            <input type="radio" name="bw-cat-radio" value="general" checked>
+                            <span class="bw-cat-emoji">💬</span>
+                            <span class="bw-cat-name">일반</span>
+                        </label>
+                        <label class="bw-cat-card" data-cat="suggestion">
+                            <input type="radio" name="bw-cat-radio" value="suggestion">
+                            <span class="bw-cat-emoji">💡</span>
+                            <span class="bw-cat-name">제안</span>
+                        </label>
+                        <label class="bw-cat-card" data-cat="inquiry">
+                            <input type="radio" name="bw-cat-radio" value="inquiry">
+                            <span class="bw-cat-emoji">❓</span>
+                            <span class="bw-cat-name">문의</span>
+                        </label>
+                        <label class="bw-cat-card" data-cat="request">
+                            <input type="radio" name="bw-cat-radio" value="request">
+                            <span class="bw-cat-emoji">📂</span>
+                            <span class="bw-cat-name">자료요청</span>
+                        </label>
+                        <label class="bw-cat-card" data-cat="bugreport">
+                            <input type="radio" name="bw-cat-radio" value="bugreport">
+                            <span class="bw-cat-emoji">🚨</span>
+                            <span class="bw-cat-name">파일오류신고</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- 카테고리별 안내 배너 -->
+                <div id="bw-guide-banner" class="bw-guide-banner bw-guide-general">
+                    <div class="bw-guide-icon">💬</div>
+                    <div class="bw-guide-text">
+                        <strong>일반</strong>
+                        <span>자유롭게 생각을 공유하거나 연수 소식, 좋은 정보를 나눌 때 사용하세요.</span>
+                    </div>
+                </div>
+
+                <!-- 글쓰기 폼 카드 -->
+                <div class="bw-form-card">
+                    <!-- 숨김 select (기존 JS 호환) -->
+                    <select id="board-write-cat" style="display:none;">
+                        <option value="general">일반</option>
+                        <option value="suggestion">제안</option>
+                        <option value="inquiry">문의</option>
+                        <option value="request">자료요청</option>
+                        <option value="bugreport">파일오류신고</option>
+                    </select>
+
+                    <div class="bw-field">
+                        <label class="bw-field-label">제목 <span class="required">*</span></label>
+                        <input type="text" id="board-write-subject" class="bw-input" placeholder="글 제목을 입력하세요" maxlength="100">
+                        <span class="bw-char-count"><span id="bw-title-count">0</span>/100</span>
+                    </div>
+
+                    <div class="bw-field">
+                        <label class="bw-field-label">내용 <span class="required">*</span></label>
+                        <textarea id="board-write-body" class="bw-textarea" placeholder="내용을 입력하세요..." rows="12"></textarea>
+                        <span class="bw-char-count"><span id="bw-body-count">0</span>자</span>
+                    </div>
+
+                    <!-- 비밀글 옵션 -->
+                    <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:#f8fafc;border-radius:8px;border:1.5px solid #e2e8f0;margin-bottom:4px;">
+                        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;color:#374151;font-weight:600;">
+                            <input type="checkbox" id="board-write-secret" style="width:16px;height:16px;cursor:pointer;accent-color:#6366f1;">
+                            <i class="fas fa-lock" style="color:#6b7280;"></i>
+                            비밀글로 작성 (작성자·관리자만 열람 가능, 제목은 공개)
+                        </label>
+                    </div>
+
+                    <div class="bw-actions">
+                        <button class="bw-btn-cancel" id="btn-board-cancel"><i class="fas fa-times"></i> 취소</button>
+                        <button class="bw-btn-submit" id="btn-board-submit"><i class="fas fa-paper-plane"></i> 등록하기</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<!-- ===== 매뉴얼 모달 ===== -->
+<div id="manual-modal" class="manual-modal-overlay hidden" onclick="if(event.target===this)closeManualModal()">
+    <div class="manual-modal-box">
+        <div class="manual-modal-header">
+            <div class="manual-modal-tabs">
+                <button class="manual-tab active" id="manual-tab-user" onclick="switchManualTab('user')">
+                    <i class="fas fa-user"></i> 사용자 매뉴얼
+                </button>
+                <button class="manual-tab" id="manual-tab-admin-btn" onclick="switchManualTab('admin')">
+                    <i class="fas fa-shield-alt"></i> 관리자 매뉴얼
+                </button>
+            </div>
+            <div class="manual-modal-actions">
+                <button class="manual-newtab-btn" id="manual-newtab-btn" onclick="openManualNewTab()" title="새 탭에서 열기">
+                    <i class="fas fa-external-link-alt"></i> 새 탭
+                </button>
+                <button class="manual-close-btn" onclick="closeManualModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+        <div class="manual-modal-body">
+            <iframe id="manual-iframe" src="" frameborder="0" allowfullscreen></iframe>
+        </div>
+    </div>
+</div>
+
+<!-- ===== 서식 업로드 모달 (4단계) ===== -->
+<div id="upload-modal" class="upload-modal-overlay hidden">
+    <div class="upload-modal-box">
+        <div class="um-header">
+            <div class="um-header-left">
+                <i class="fas fa-file-upload"></i>
+                <span id="um-title">서식 추가하기</span>
+            </div>
+            <button class="um-close" id="um-close"><i class="fas fa-times"></i></button>
+        </div>
+
+        <div class="um-steps">
+            <div class="um-step active" id="um-s1"><span class="um-step-num">가</span><span class="um-step-label">제목</span></div>
+            <div class="um-step-line"></div>
+            <div class="um-step" id="um-s2"><span class="um-step-num">나</span><span class="um-step-label">부서</span></div>
+            <div class="um-step-line"></div>
+            <div class="um-step" id="um-s3"><span class="um-step-num">다</span><span class="um-step-label">파일</span></div>
+            <div class="um-step-line"></div>
+            <div class="um-step" id="um-s4"><span class="um-step-num">라</span><span class="um-step-label">저장</span></div>
+        </div>
+
+        <!-- 숨김 필드: 메타데이터 매칭 base_form ID (업로드 유도 모달에서 설정됨) -->
+        <input type="hidden" id="um-base-form-id" value="">
+
+        <div class="um-body">
+            <!-- 가단계: 제목 입력 -->
+            <div class="um-panel active" id="um-panel-1">
+                <div class="um-panel-icon">📝</div>
+                <h3 class="um-panel-title">가. 자료의 제목을 입력하세요</h3>
+                <p class="um-panel-desc">서식 목록에 표시될 이름입니다.
+                    <span id="um-point-notice" class="um-point-notice hidden">
+                        🎁 이 자료를 업로드하면 <strong>150P</strong>가 적립됩니다!
+                    </span>
+                </p>
+                <input type="text" id="um-input-title" class="um-text-input"
+                    placeholder="예) 학교폭력 사안 접수 대장" maxlength="60">
+                <p class="um-error hidden" id="um-err-1">제목을 입력해주세요.</p>
+                <div class="um-input-footer">
+                    <span id="um-title-count">0 / 60자</span>
+                </div>
+                <textarea id="um-input-desc" class="um-text-input um-textarea"
+                    placeholder="간단한 설명을 입력하세요 (선택사항)" maxlength="100" rows="2"></textarea>
+            </div>
+
+            <!-- 나단계: 부서 선택 -->
+            <div class="um-panel" id="um-panel-2">
+                <div class="um-panel-icon">🏢</div>
+                <h3 class="um-panel-title">나. 해당 부서를 선택하세요</h3>
+                <p class="um-panel-desc">선택한 부서의 서식 목록에 자료가 등록됩니다.</p>
+                <div class="um-dept-grid">
+                    <button class="um-dept-btn" data-dept="교감업무">🏫 교감업무</button>
+                    <button class="um-dept-btn" data-dept="교무부">📚 교무부</button>
+                    <button class="um-dept-btn" data-dept="과정평가부">📝 과정평가부</button>
+                    <button class="um-dept-btn" data-dept="연구부">🔬 연구부</button>
+                    <button class="um-dept-btn" data-dept="인성부">💛 인성부</button>
+                    <button class="um-dept-btn" data-dept="정보부">💻 정보부</button>
+                    <button class="um-dept-btn" data-dept="과학영재수학환경부">🧪 과학영재수학환경부</button>
+                    <button class="um-dept-btn" data-dept="체육안전부">⚽ 체육안전부</button>
+                </div>
+                <p class="um-error hidden" id="um-err-2">부서를 선택해주세요.</p>
+                <div class="um-selected-dept" id="um-selected-dept-badge" style="display:none;">
+                    선택됨: <strong id="um-selected-dept-name"></strong>
+                </div>
+            </div>
+
+            <!-- 다단계: 파일 선택 -->
+            <div class="um-panel" id="um-panel-3">
+                <div class="um-panel-icon">📂</div>
+                <h3 class="um-panel-title">다. 업로드할 파일을 선택하세요</h3>
+                <p class="um-panel-desc">hwpx, hwp, pdf, xlsx, docx, ppt 파일을 지원합니다. (파일 크기 제한 없음)</p>
+                <div class="um-file-drop" id="um-file-drop">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>여기를 클릭하거나 파일을 끌어다 놓으세요</p>
+                    <span class="um-file-hint">hwpx · hwp · pdf · xlsx · docx · ppt</span>
+                    <input type="file" id="um-file-input"
+                        accept=".hwpx,.hwp,.pdf,.xlsx,.xls,.docx,.doc,.ppt,.pptx,.hwt"
+                        style="display:none;">
+                </div>
+                <div class="um-file-selected" id="um-file-selected" style="display:none;">
+                    <i class="fas fa-file-check"></i>
+                    <div class="um-file-info">
+                        <p id="um-file-name-display" class="um-file-name"></p>
+                        <p id="um-file-size-display" class="um-file-size"></p>
+                    </div>
+                    <button class="um-file-remove" id="um-file-remove"><i class="fas fa-times"></i></button>
+                </div>
+                <p class="um-error hidden" id="um-err-3">파일을 선택해주세요.</p>
+            </div>
+
+            <!-- 라단계: 확인 및 저장 -->
+            <div class="um-panel" id="um-panel-4">
+                <div class="um-panel-icon">✅</div>
+                <h3 class="um-panel-title">라. 아래 내용을 확인하고 저장하세요</h3>
+                <div class="um-confirm-box" id="um-confirm-box">
+                    <div class="um-confirm-row"><span class="um-confirm-label">📝 제목</span><span id="uc-title" class="um-confirm-value"></span></div>
+                    <div class="um-confirm-row"><span class="um-confirm-label">🏢 부서</span><span id="uc-dept" class="um-confirm-value"></span></div>
+                    <div class="um-confirm-row"><span class="um-confirm-label">📄 파일</span><span id="uc-file" class="um-confirm-value"></span></div>
+                    <div class="um-confirm-row"><span class="um-confirm-label">📋 설명</span><span id="uc-desc" class="um-confirm-value"></span></div>
+                </div>
+                <div class="um-saving hidden" id="um-saving">
+                    <i class="fas fa-spinner fa-spin"></i> 자료실에 저장 중입니다...
+                </div>
+            </div>
+
+            <!-- 완료 단계 -->
+            <div class="um-panel" id="um-panel-done">
+                <div class="um-panel-icon" style="font-size:52px;">🎉</div>
+                <h3 class="um-panel-title">저장 완료!</h3>
+                <p class="um-panel-desc" id="um-done-msg">서식이 자료실에 등록되었습니다.</p>
+                <!-- 포인트 안내 (메타데이터 매칭 업로드인 경우 강조 표시) -->
+                <div id="um-point-result-wrap" class="um-point-result hidden">
+                    <div class="um-point-result-card">
+                        <span class="um-point-result-icon">🪙</span>
+                        <div class="um-point-result-text">
+                            <strong>관리자가 검토 후 포인트가 부여됩니다.</strong><br>
+                            <span>승인되면 자동으로 <em>150포인트</em>가 적립됩니다!</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn-primary um-done-btn" id="um-btn-another">
+                    <i class="fas fa-plus"></i> 다른 서식 추가하기
+                </button>
+                <button class="btn-action um-done-btn" id="um-btn-close-done" style="margin-top:8px;">
+                    <i class="fas fa-check"></i> 자료실로 돌아가기
+                </button>
+            </div>
+        </div>
+
+        <div class="um-footer" id="um-footer">
+            <button class="um-btn-prev" id="um-btn-prev" style="display:none;">
+                <i class="fas fa-chevron-left"></i> 이전
+            </button>
+            <button class="um-btn-next" id="um-btn-next">
+                다음 <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== 로그인 모달 ===== -->
+<div id="auth-modal" class="auth-modal-overlay hidden">
+    <div class="auth-modal-box">
+        <!-- 탭 -->
+        <div class="auth-tabs">
+            <button class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">
+                <i class="fas fa-sign-in-alt"></i> 로그인
+            </button>
+            <button class="auth-tab" id="tab-register" onclick="switchAuthTab('register')">
+                <i class="fas fa-user-plus"></i> 회원가입
+            </button>
+        </div>
+
+        <!-- 로그인 폼 -->
+        <div id="auth-panel-login" class="auth-panel active">
+            <div class="auth-header">
+                <div class="auth-logo">A</div>
+                <h3>AFTER 로그인</h3>
+                <p>승인된 회원만 서비스를 이용할 수 있습니다</p>
+            </div>
+            <div class="auth-form">
+                <div class="auth-field">
+                    <label><i class="fas fa-user"></i> 아이디</label>
+                    <input type="text" id="login-id" placeholder="아이디 입력" autocomplete="username">
+                </div>
+                <div class="auth-field">
+                    <label><i class="fas fa-lock"></i> 비밀번호</label>
+                    <input type="password" id="login-pw" placeholder="비밀번호 입력" autocomplete="current-password">
+                </div>
+                <p class="auth-error hidden" id="login-error"></p>
+                <button class="btn-primary auth-submit-btn" id="btn-login">
+                    <i class="fas fa-sign-in-alt"></i> 로그인
+                </button>
+                <div class="auth-links">
+                    <button class="auth-link-btn" onclick="switchAuthTab('register')">계정이 없으신가요? 회원가입</button>
+                    <button class="auth-link-btn auth-link-danger" id="btn-delete-account-link">회원 탈퇴</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 회원가입 폼 -->
+        <div id="auth-panel-register" class="auth-panel">
+            <div class="auth-header">
+                <div class="auth-logo">A</div>
+                <h3>AFTER 회원가입</h3>
+                <p>아래 정보를 입력하고 관리자 승인을 기다려주세요</p>
+            </div>
+            <div class="auth-form">
+                <div class="auth-field">
+                    <label><i class="fas fa-user"></i> 아이디 <span class="required">*</span></label>
+                    <input type="text" id="reg-id" placeholder="영문+숫자, 4~20자" maxlength="20">
+                </div>
+                <div class="auth-field">
+                    <label><i class="fas fa-lock"></i> 비밀번호 <span class="required">*</span></label>
+                    <input type="password" id="reg-pw" placeholder="8자 이상, 영문+숫자+특수문자" maxlength="30" oninput="checkPwStrength(this.value)">
+                    <p class="pw-guide"><i class="fas fa-info-circle"></i> 8자 이상, 영문자 + 숫자 + 특수문자(!@#$%^&* 등) 조합 필수</p>
+                    <div class="pw-strength-bar" id="pw-strength-bar">
+                        <div class="pw-strength-fill" id="pw-strength-fill"></div>
+                    </div>
+                    <p class="pw-strength-text" id="pw-strength-text"></p>
+                </div>
+                <div class="auth-field">
+                    <label><i class="fas fa-lock"></i> 비밀번호 확인 <span class="required">*</span></label>
+                    <input type="password" id="reg-pw2" placeholder="비밀번호 재입력" maxlength="30"></div>
+                <div class="auth-field">
+                    <label><i class="fas fa-id-card"></i> 성명 <span class="required">*</span></label>
+                    <input type="text" id="reg-fullname" placeholder="실명을 입력하세요" maxlength="20">
+                </div>
+                <div class="auth-field">
+                    <label><i class="fas fa-envelope"></i> 이메일 <span class="required">*</span></label>
+                    <input type="email" id="reg-email" placeholder="example@school.kr" maxlength="100">
+                </div>
+                <div class="auth-field">
+                    <label><i class="fas fa-school"></i> 소속 학교 <span class="required">*</span></label>
+                    <input type="text" id="reg-school" placeholder="예) 경남 ○○중학교" maxlength="60">
+                </div>
+                <!-- 개인정보 동의 -->
+                <div class="auth-consent-box">
+                    <div class="auth-consent-title"><i class="fas fa-shield-alt"></i> 개인정보 수집 및 이용 동의</div>
+                    <div class="auth-consent-body">
+                        <p>수집 항목: 아이디, 이메일, 소속 학교</p>
+                        <p>수집 목적: 회원 관리(유료 서비스 전환 대비) 및 교육기관 소속 확인</p>
+                        <p>보유 기간: 회원 탈퇴 시까지</p>
+                        <p>귀하의 개인정보는 위 목적 이외에는 사용되지 않습니다.</p>
+                    </div>
+                    <label class="auth-consent-check">
+                        <input type="checkbox" id="reg-consent">
+                        <span>위 개인정보 수집 및 이용에 동의합니다 <span class="required">*</span></span>
+                    </label>
+                </div>
+                <p class="auth-error hidden" id="register-error"></p>
+                <p class="auth-success hidden" id="register-success"></p>
+                <button class="btn-primary auth-submit-btn" id="btn-register">
+                    <i class="fas fa-user-plus"></i> 회원가입 신청
+                </button>
+                <div class="auth-links">
+                    <button class="auth-link-btn" onclick="switchAuthTab('login')">이미 계정이 있으신가요? 로그인</button>
+                </div>
+            </div>
+        </div>
+
+        <button class="auth-close" id="auth-close"><i class="fas fa-times"></i></button>
+    </div>
+</div>
+
+<!-- ===== 업로드 유도 모달 (준비중/검색 버튼 클릭 시) ===== -->
+<div id="upload-nudge-modal" class="upload-nudge-overlay hidden">
+    <div class="upload-nudge-box">
+        <!-- 닫기 버튼 -->
+        <button class="un-close" onclick="closeUploadNudgeModal()"><i class="fas fa-times"></i></button>
+
+        <!-- 아이콘 + 제목 -->
+        <div class="un-icon-wrap">
+            <div class="un-icon">🙏</div>
+        </div>
+        <h3 class="un-title">자료를 직접 등록해 주세요!</h3>
+        <p class="un-desc">
+            <strong id="un-file-title" class="un-highlight"></strong><br>
+            해당 자료는 아직 준비가 되지 않았습니다.<br>
+            직접 검색하신 뒤 파일을 업로드해 주시면<br>
+            <span class="un-point">🎁 150 포인트</span>를 드립니다.
+        </p>
+        <p class="un-sub">업로드하시겠습니까?</p>
+
+        <!-- Yes / No 버튼 -->
+        <div class="un-btn-row">
+            <button class="un-btn-yes" id="un-btn-yes" onclick="onUploadNudgeYes()">
+                <i class="fas fa-upload"></i> Yes, 업로드하기
+            </button>
+            <button class="un-btn-no" onclick="closeUploadNudgeModal()">
+                <i class="fas fa-times"></i> No
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== 회원 탈퇴 모달 ===== -->
+<div id="delete-account-modal" class="auth-modal-overlay hidden">
+    <div class="auth-modal-box" style="max-width:400px;">
+        <div class="auth-header" style="padding:24px 24px 0;">
+            <h3 style="color:#dc2626;"><i class="fas fa-user-times"></i> 회원 탈퇴</h3>
+            <p>아이디와 비밀번호를 입력하면 계정이 삭제됩니다.</p>
+        </div>
+        <div class="auth-form" style="padding:16px 24px 24px;">
+            <div class="auth-field">
+                <label><i class="fas fa-user"></i> 아이디</label>
+                <input type="text" id="del-id" placeholder="아이디 입력">
+            </div>
+            <div class="auth-field">
+                <label><i class="fas fa-lock"></i> 비밀번호</label>
+                <input type="password" id="del-pw" placeholder="비밀번호 입력">
+            </div>
+            <p class="auth-error hidden" id="delete-error"></p>
+            <button class="btn-danger auth-submit-btn" id="btn-delete-account">
+                <i class="fas fa-trash-alt"></i> 탈퇴하기
+            </button>
+            <button class="btn-action auth-submit-btn" style="margin-top:8px;" onclick="closeDeleteAccountModal()">
+                취소
+            </button>
+        </div>
+        <button class="auth-close" onclick="closeDeleteAccountModal()"><i class="fas fa-times"></i></button>
+    </div>
+</div>
+
+<!-- ===== 관리자 전용 파일 교체 모달 ===== -->
+<div id="replace-file-modal" class="auth-modal-overlay hidden" onclick="if(event.target===this)closeReplaceFileModal()">
+    <div class="replace-file-box">
+        <div class="replace-file-header">
+            <div class="replace-file-icon"><i class="fas fa-file-upload"></i></div>
+            <div>
+                <h3 class="replace-file-title">파일 교체 (관리자 전용)</h3>
+                <p class="replace-file-sub" id="replace-file-subtitle">파일을 교체합니다</p>
+            </div>
+            <button class="auth-close" onclick="closeReplaceFileModal()" style="margin-left:auto;"><i class="fas fa-times"></i></button>
+        </div>
+
+        <!-- 현재 파일 정보 -->
+        <div class="replace-current-info" id="replace-current-info">
+            <div class="replace-info-row">
+                <span class="replace-info-label">자료명</span>
+                <span class="replace-info-val" id="replace-info-title">-</span>
+            </div>
+            <div class="replace-info-row">
+                <span class="replace-info-label">부서</span>
+                <span class="replace-info-val" id="replace-info-dept">-</span>
+            </div>
+            <div class="replace-info-row">
+                <span class="replace-info-label">형식</span>
+                <span class="replace-info-val" id="replace-info-type">-</span>
+            </div>
+            <div class="replace-info-row" id="replace-info-current-row" style="display:none;">
+                <span class="replace-info-label">현재 파일</span>
+                <span class="replace-info-val replace-info-current" id="replace-info-current">없음 (메타데이터만)</span>
+            </div>
+        </div>
+
+        <!-- 파일 선택 영역 -->
+        <div class="replace-drop-zone" id="replace-drop-zone"
+             ondragover="event.preventDefault();this.classList.add('dragover')"
+             ondragleave="this.classList.remove('dragover')"
+             ondrop="handleReplaceFileDrop(event)">
+            <i class="fas fa-cloud-upload-alt" style="font-size:36px;opacity:0.5;margin-bottom:10px;"></i>
+            <p style="margin:0 0 8px;font-size:14px;color:#6b7280;">파일을 여기에 드래그하거나</p>
+            <label class="replace-select-label" for="replace-file-input">
+                <i class="fas fa-folder-open"></i> 파일 선택
+            </label>
+            <input type="file" id="replace-file-input" style="display:none;" onchange="handleReplaceFileSelect(event)">
+        </div>
+
+        <!-- 선택된 파일 표시 -->
+        <div id="replace-selected-file" style="display:none;" class="replace-selected-info">
+            <i class="fas fa-file-check" style="color:#10b981;"></i>
+            <span id="replace-selected-name" style="flex:1;font-size:13px;"></span>
+            <span id="replace-selected-size" style="font-size:12px;color:#9ca3af;"></span>
+            <button onclick="clearReplaceFile()" style="background:none;border:none;cursor:pointer;color:#ef4444;padding:2px 6px;"><i class="fas fa-times"></i></button>
+        </div>
+
+        <!-- 경고 문구 -->
+        <p class="replace-warn" id="replace-warn" style="display:none;color:#ef4444;font-size:12px;margin-top:6px;"></p>
+
+        <!-- 버튼 -->
+        <div style="display:flex;gap:8px;margin-top:16px;">
+            <button class="btn-secondary" onclick="closeReplaceFileModal()" style="flex:1;">취소</button>
+            <button id="replace-submit-btn" class="btn-primary" onclick="submitReplaceFile()" disabled style="flex:2;background:linear-gradient(135deg,#7c3aed,#4f46e5);">
+                <i class="fas fa-upload"></i> 파일 교체 저장
+            </button>
+        </div>
+        <div id="replace-saving" style="display:none;text-align:center;padding:10px 0;font-size:13px;color:#6b7280;">
+            <i class="fas fa-spinner fa-spin"></i> 저장 중...
+        </div>
+    </div>
+</div>
+
+<!-- ===== 관리자 모달 ===== -->
+<div id="admin-modal" class="auth-modal-overlay hidden">
+    <div class="admin-modal-box">
+        <!-- 관리자 로그인 패널 -->
+        <div id="admin-panel-login" class="admin-panel active">
+            <div class="auth-header">
+                <div class="auth-logo" style="background:linear-gradient(135deg,#dc2626,#991b1b);">
+                    <i class="fas fa-shield-alt" style="font-size:20px;"></i>
+                </div>
+                <h3>관리자 모드</h3>
+                <p>관리자 계정으로 로그인해주세요</p>
+            </div>
+            <div class="auth-form" style="padding:16px 24px 24px;">
+                <div class="auth-field">
+                    <label><i class="fas fa-user-shield"></i> 관리자 ID</label>
+                    <input type="text" id="admin-id-input" placeholder="관리자 아이디">
+                </div>
+                <div class="auth-field">
+                    <label><i class="fas fa-lock"></i> 비밀번호</label>
+                    <input type="password" id="admin-pw-input" placeholder="관리자 비밀번호">
+                </div>
+                <p class="auth-error hidden" id="admin-login-error"></p>
+                <button class="btn-primary auth-submit-btn" id="btn-admin-login">
+                    <i class="fas fa-sign-in-alt"></i> 관리자 로그인
+                </button>
+            </div>
+            <button class="auth-close" onclick="closeAdminModal()"><i class="fas fa-times"></i></button>
+        </div>
+
+        <!-- 관리자 대시보드 -->
+        <div id="admin-panel-dashboard" class="admin-panel">
+            <div class="admin-dashboard-header">
+                <div>
+                    <h3><i class="fas fa-shield-alt"></i> 관리자 패널</h3>
+                    <p>회원 관리 및 서비스 설정</p>
+                </div>
+                <button class="btn-danger" id="btn-admin-logout" style="padding:6px 14px;font-size:13px;">
+                    <i class="fas fa-sign-out-alt"></i> 로그아웃
+                </button>
+            </div>
+
+            <!-- 탭 -->
+            <div class="admin-tabs" id="admin-tabs-bar">
+                <button class="admin-tab active" onclick="switchAdminTab('members')">
+                    <i class="fas fa-users"></i> 회원
+                </button>
+                <button class="admin-tab" onclick="switchAdminTab('notices')">
+                    <i class="fas fa-bullhorn"></i> 공지
+                </button>
+                <button class="admin-tab" onclick="switchAdminTab('useruploads')">
+                    <i class="fas fa-file-upload"></i> 승인
+                </button>
+                <button class="admin-tab" onclick="switchAdminTab('baseforms')">
+                    <i class="fas fa-folder-open"></i> 서식DB
+                </button>
+                <button class="admin-tab" onclick="switchAdminTab('apikey')">
+                    <i class="fas fa-key"></i> API
+                </button>
+                <button class="admin-tab" onclick="switchAdminTab('backup')">
+                    <i class="fas fa-database"></i> 백업
+                </button>
+                <button class="admin-tab" onclick="switchAdminTab('github')">
+                    <i class="fab fa-github"></i> GitHub
+                </button>
+            </div>
+
+            <!-- 회원 관리 탭 -->
+            <div id="admin-tab-members" class="admin-tab-content active">
+                <div class="admin-tab-toolbar">
+                    <span class="admin-tab-title">회원 목록 <span id="admin-member-count" style="font-size:12px;color:#6b7280;font-weight:400;"></span></span>
+                    <div style="display:flex;gap:6px;">
+                        <button class="btn-action" style="padding:6px 12px;font-size:12px;background:#6366f1;color:#fff;border:none;border-radius:6px;cursor:pointer;" onclick="openAddMemberModal()">
+                            <i class="fas fa-user-plus"></i> 회원 추가
+                        </button>
+                        <button class="btn-action" style="padding:6px 12px;font-size:12px;" onclick="loadAdminMembers()">
+                            <i class="fas fa-sync"></i> 새로고침
+                        </button>
+                    </div>
+                </div>
+                <div id="admin-members-list" class="admin-members-list">
+                    <div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>로딩 중...</p></div>
+                </div>
+            </div>
+
+            <!-- 공지사항 관리 탭 -->
+            <div id="admin-tab-notices" class="admin-tab-content">
+                <div class="admin-tab-toolbar">
+                    <span class="admin-tab-title">공지사항 관리</span>
+                    <button class="btn-action" style="padding:6px 12px;font-size:12px;" onclick="loadAdminNotices()">
+                        <i class="fas fa-sync"></i> 새로고침
+                    </button>
+                </div>
+                <!-- 작성 폼 -->
+                <div class="notice-write-wrap">
+                    <input type="hidden" id="notice-edit-id" value="">
+                    <div class="auth-field" style="margin-bottom:8px;">
+                        <label style="font-size:12px;font-weight:700;">공지 제목 <span class="required">*</span></label>
+                        <input type="text" id="notice-title-input" placeholder="공지 제목 입력" maxlength="80">
+                    </div>
+                    <div class="auth-field" style="margin-bottom:8px;">
+                        <label style="font-size:12px;font-weight:700;">공지 내용 <span class="required">*</span></label>
+                        <textarea id="notice-content-input" rows="4" placeholder="공지 내용 입력" style="width:100%;padding:10px 12px;border:1.5px solid #e5e7eb;border-radius:8px;font-size:13px;font-family:inherit;resize:vertical;box-sizing:border-box;"></textarea>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+                        <label style="font-size:12px;font-weight:700;color:#6b7280;">활성화</label>
+                        <select id="notice-active-input" style="padding:6px 10px;border:1.5px solid #e5e7eb;border-radius:6px;font-size:13px;">
+                            <option value="true">✅ 공개 (활성)</option>
+                            <option value="false">🚫 비공개 (비활성)</option>
+                        </select>
+                    </div>
+                    <div style="display:flex;gap:8px;">
+                        <button class="btn-primary" style="flex:1;justify-content:center;" onclick="adminSaveNotice()">
+                            <i class="fas fa-bullhorn" id="notice-save-icon"></i> <span id="notice-save-label">공지 등록</span>
+                        </button>
+                        <button class="btn-action" style="padding:8px 14px;font-size:13px;display:none;" onclick="adminCancelNoticeEdit()" id="notice-cancel-btn">
+                            <i class="fas fa-times"></i> 취소
+                        </button>
+                    </div>
+                </div>
+                <!-- 공지 목록 -->
+                <div id="admin-notices-list" style="margin-top:16px;display:flex;flex-direction:column;gap:8px;">
+                    <div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>로딩 중...</p></div>
+                </div>
+            </div>
+
+            <!-- 사용자 업로드 자료 승인 탭 -->
+            <div id="admin-tab-useruploads" class="admin-tab-content">
+                <div class="admin-tab-toolbar">
+                    <span class="admin-tab-title">사용자 업로드 자료 승인 <span id="admin-useruploads-count" style="font-size:12px;color:#6b7280;font-weight:400;"></span></span>
+                    <button class="btn-action" style="padding:6px 12px;font-size:12px;" onclick="loadAdminUserUploads()">
+                        <i class="fas fa-sync"></i> 새로고침
+                    </button>
+                </div>
+                <p style="font-size:12px;color:#6b7280;margin-bottom:10px;background:#fef3c7;padding:8px 10px;border-radius:6px;">
+                    <i class="fas fa-info-circle"></i> 승인 없이 삭제 시 업로더에게 <strong>50P 벌점</strong>이 자동 부과됩니다.
+                </p>
+                <div id="admin-useruploads-list" class="admin-members-list">
+                    <div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>로딩 중...</p></div>
+                </div>
+            </div>
+
+            <!-- 서식 DB 관리 탭 -->
+            <div id="admin-tab-baseforms" class="admin-tab-content">
+                <div class="admin-tab-toolbar">
+                    <span class="admin-tab-title">원본 서식 DB 관리</span>
+                    <button class="btn-action" style="padding:6px 12px;font-size:12px;" onclick="loadAdminBaseForms()">
+                        <i class="fas fa-sync"></i> 새로고침
+                    </button>
+                </div>
+
+                <!-- 업로드 방식 탭 -->
+                <div class="abf-mode-tabs">
+                    <button class="abf-mode-tab active" id="abf-tab-multi" onclick="switchAbfMode('multi')">
+                        <i class="fas fa-layer-group"></i> 다중 업로드 (파일명=제목)
+                    </button>
+                    <button class="abf-mode-tab" id="abf-tab-single" onclick="switchAbfMode('single')">
+                        <i class="fas fa-file-upload"></i> 단일 업로드 (상세 설정)
+                    </button>
+                </div>
+
+                <!-- ── 다중 업로드 패널 ── -->
+                <div id="abf-panel-multi" class="admin-bf-upload">
+                    <p style="font-size:12px;color:#6b7280;margin-bottom:10px;">
+                        <strong>여러 파일을 한 번에 선택</strong>하면 파일명이 자동으로 서식 제목이 됩니다.<br>
+                        같은 제목(파일명 확장자 제외)의 PDF/HWP를 함께 올리면 자료실에 묶여서 표시됩니다.<br>
+                        <span style="color:#6366f1;font-weight:600;">📌 개수 제한 없음 — 100개 이상도 가능. 여러 번 클릭해서 나눠 추가할 수 있습니다.</span>
+                    </p>
+                    <div class="auth-field">
+                        <label>부서 선택 <span class="required">*</span></label>
+                        <select id="abf-multi-dept" class="auth-field-select">
+                            <option value="">-- 선택 --</option>
+                            <option value="교감업무">🏫 교감업무</option>
+                            <option value="교무부">📚 교무부</option>
+                            <option value="과정평가부">📝 과정평가부</option>
+                            <option value="연구부">🔬 연구부</option>
+                            <option value="인성부">💛 인성부</option>
+                            <option value="정보부">💻 정보부</option>
+                            <option value="과학영재수학환경부">🧪 과학영재수학환경부</option>
+                            <option value="체육안전부">⚽ 체육안전부</option>
+                        </select>
+                    </div>
+                    <div class="auth-field">
+                        <label>출처 기관 (선택)</label>
+                        <input type="text" id="abf-multi-source" placeholder="예) 경상남도교육청" maxlength="60">
+                    </div>
+                    <div class="auth-field">
+                        <label>파일 선택 (여러 개 동시 선택 가능)</label>
+                        <div class="abf-file-drop abf-multi-drop" id="abf-multi-drop" onclick="document.getElementById('abf-multi-input').click()">
+                            <i class="fas fa-cloud-upload-alt" style="font-size:28px;margin-bottom:6px;"></i>
+                            <p>클릭하거나 파일을 끌어다 놓으세요</p>
+                            <p style="font-size:11px;margin-top:4px;opacity:0.7;">hwp · hwpx · pdf · xlsx · ppt · docx · pptx — 크기 제한 없음</p>
+                            <p style="font-size:11px;margin-top:2px;color:#6366f1;font-weight:600;">📂 개수 제한 없음 · 여러 번 나눠서 추가 가능</p>
+                            <input type="file" id="abf-multi-input" multiple
+                                accept=".hwp,.hwpx,.pdf,.xlsx,.xls,.docx,.doc,.ppt,.pptx"
+                                style="display:none;" onchange="abfMultiFilesSelected(this.files)">
+                        </div>
+                        <!-- 선택된 파일 목록 -->
+                        <div id="abf-multi-file-list" style="margin-top:8px;display:none;">
+                            <div id="abf-multi-file-items"></div>
+                        </div>
+                    </div>
+                    <p class="auth-error hidden" id="abf-multi-error"></p>
+                    <!-- 진행 상태 -->
+                    <div id="abf-multi-progress" style="display:none;margin-bottom:10px;">
+                        <div class="abf-progress-bar-wrap">
+                            <div class="abf-progress-bar" id="abf-progress-bar"></div>
+                        </div>
+                        <p id="abf-progress-text" style="font-size:12px;color:#6b7280;margin-top:4px;text-align:center;"></p>
+                    </div>
+                    <button class="btn-primary" style="width:100%;justify-content:center;" id="btn-abf-multi-upload" onclick="adminMultiUpload()">
+                        <i class="fas fa-layer-group"></i> 선택한 파일 모두 등록
+                    </button>
+                </div>
+
+                <!-- ── 단일 업로드 패널 ── -->
+                <div id="abf-panel-single" class="admin-bf-upload" style="display:none;">
+                    <p style="font-size:12px;color:#6b7280;margin-bottom:10px;">
+                        <strong>같은 제목의 서식이라면 PDF/HWP 버전을 각각 업로드</strong>하면 자료실에서 함께 표시됩니다.
+                    </p>
+                    <div class="admin-bf-row">
+                        <div class="auth-field" style="flex:2;">
+                            <label>서식 제목 <span class="required">*</span></label>
+                            <input type="text" id="abf-title" placeholder="예) 학교폭력 사안 접수 처리 대장" maxlength="80">
+                        </div>
+                        <div class="auth-field" style="flex:1;">
+                            <label>부서 <span class="required">*</span></label>
+                            <select id="abf-dept" class="auth-field-select">
+                                <option value="">-- 선택 --</option>
+                                <option value="교감업무">🏫 교감업무</option>
+                                <option value="교무부">📚 교무부</option>
+                                <option value="과정평가부">📝 과정평가부</option>
+                                <option value="연구부">🔬 연구부</option>
+                                <option value="인성부">💛 인성부</option>
+                                <option value="정보부">💻 정보부</option>
+                                <option value="과학영재수학환경부">🧪 과학영재수학환경부</option>
+                                <option value="체육안전부">⚽ 체육안전부</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="auth-field">
+                        <label>설명 (선택)</label>
+                        <input type="text" id="abf-desc" placeholder="간단한 설명" maxlength="100">
+                    </div>
+                    <div class="auth-field">
+                        <label>출처 기관 (선택)</label>
+                        <input type="text" id="abf-source" placeholder="예) 경상남도교육청, 교육부" maxlength="60">
+                    </div>
+                    <div class="auth-field">
+                        <label>표시 순서 (숫자, 낮을수록 위)</label>
+                        <input type="number" id="abf-order" placeholder="예) 10" value="10" min="1" max="9999">
+                    </div>
+                    <div class="auth-field">
+                        <label>파일 선택 <span style="color:#9ca3af;font-weight:400;">(hwp·hwpx·pdf·xlsx·ppt, 크기 제한 없음)</span></label>
+                        <p style="font-size:11px;color:#6b7280;margin-bottom:6px;">※ 파일이 없으면 아래 URL 중 하나만 입력해도 됩니다.</p>
+                        <div class="abf-file-drop" id="abf-file-drop">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>클릭하거나 파일을 끌어다 놓으세요</p>
+                            <input type="file" id="abf-file-input"
+                                accept=".hwp,.hwpx,.pdf,.xlsx,.xls,.docx,.doc,.ppt,.pptx"
+                                style="display:none;">
+                        </div>
+                        <div id="abf-file-selected" class="abf-file-selected" style="display:none;">
+                            <i class="fas fa-file-check"></i>
+                            <span id="abf-file-name">-</span>
+                            <span id="abf-file-size" style="color:#9ca3af;">-</span>
+                            <button onclick="abfClearFile()" style="background:none;border:none;cursor:pointer;color:#dc2626;"><i class="fas fa-times"></i></button>
+                        </div>
+                    </div>
+                    <div class="auth-field">
+                        <label>직접 다운로드 URL (선택) <span style="color:#9ca3af;font-weight:400;">파일 없을 때 활용</span></label>
+                        <input type="url" id="abf-download-url" placeholder="https://...  (직접 다운로드 링크)" maxlength="500">
+                    </div>
+                    <div class="auth-field">
+                        <label>검색 URL (선택) <span style="color:#9ca3af;font-weight:400;">파일/직접URL 없을 때 활용</span></label>
+                        <input type="url" id="abf-search-url" placeholder="https://...  (관련 서식 검색 링크)" maxlength="500">
+                    </div>
+                    <p class="auth-error hidden" id="abf-error"></p>
+                    <button class="btn-primary" style="width:100%;justify-content:center;" id="btn-abf-upload" onclick="adminUploadBaseForm()">
+                        <i class="fas fa-upload"></i> 서식 DB에 등록
+                    </button>
+                </div>
+
+                <!-- DB 정밀 검수 -->
+                <div style="margin-top:20px;background:linear-gradient(135deg,#fef2f2,#fff7ed);border:1.5px solid #fca5a5;border-radius:12px;padding:14px 16px;">
+                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+                        <span style="font-size:13px;font-weight:700;color:#b91c1c;">🔬 DB 정밀 검수</span>
+                        <span style="font-size:11px;color:#6b7280;">상세 API로 실제 파일 데이터를 확인 후 다운로드 불가 항목과 중복 항목을 자동 삭제합니다</span>
+                    </div>
+                    <div style="font-size:11px;color:#92400e;background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;padding:8px 12px;margin-bottom:10px;">
+                        ⚠️ 주의: 실행 시 개별 레코드를 모두 조회하므로 건수에 따라 수분이 소요될 수 있습니다. 실행 중 페이지를 닫지 마세요.
+                    </div>
+                    <button id="btn-deep-audit" class="btn-primary" style="font-size:13px;" onclick="runDeepDbAudit()">
+                        <i class="fas fa-microscope"></i> DB 정밀 검수 실행
+                    </button>
+                    <!-- 진행 바 -->
+                    <div style="margin-top:10px;background:#e5e7eb;border-radius:6px;height:8px;overflow:hidden;">
+                        <div id="deep-audit-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#ef4444,#f59e0b);border-radius:6px;transition:width 0.3s;"></div>
+                    </div>
+                    <div id="deep-audit-pct" style="font-size:11px;color:#6b7280;margin-top:4px;"></div>
+                    <!-- 로그 출력 -->
+                    <div id="deep-audit-log" style="margin-top:8px;max-height:200px;overflow-y:auto;background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:8px 10px;font-family:monospace;"></div>
+                </div>
+
+                <!-- 등록된 서식 목록 -->
+                <div style="margin-top:20px;">
+                    <div class="admin-tab-toolbar">
+                        <span style="font-size:13px;font-weight:700;">등록된 원본 서식</span>
+                        <span id="abf-list-count" style="font-size:12px;color:#6b7280;"></span>
+                    </div>
+                    <div id="admin-bf-list" class="admin-bf-list">
+                        <div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>로딩 중...</p></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- API 키 관리 탭 -->
+            <div id="admin-tab-apikey" class="admin-tab-content">
+                <div class="admin-tab-title" style="margin-bottom:12px;">공유 API 키 관리</div>
+                <p style="font-size:13px;color:#6b7280;margin-bottom:16px;">
+                    관리자가 설정한 API 키는 모든 승인된 사용자가 공유합니다.<br>
+                    현재 저장된 키: <strong id="admin-api-key-status">확인 중...</strong>
+                </p>
+                <div class="auth-field">
+                    <label><i class="fas fa-key"></i> 새 API 키 입력</label>
+                    <input type="text" id="admin-api-key-input" placeholder="AIza로 시작하는 API 키">
+                </div>
+                <button class="btn-primary" style="width:100%;justify-content:center;margin-top:8px;" onclick="adminSaveApiKey()">
+                    <i class="fas fa-save"></i> API 키 저장 및 전체 적용
+                </button>
+                <button class="btn-danger" style="width:100%;justify-content:center;margin-top:8px;" onclick="adminClearApiKey()">
+                    <i class="fas fa-trash"></i> API 키 삭제
+                </button>
+            </div>
+
+            <!-- 백업 / 복구 탭 -->
+            <div id="admin-tab-backup" class="admin-tab-content">
+                <div class="backup-tab-wrap">
+
+                    <!-- ☁️ 클라우드 데이터 현황 카드 -->
+                    <div class="backup-section" style="background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:1px solid #bbf7d0;">
+                        <div class="backup-section-header" style="margin-bottom:10px;">
+                            <span class="backup-section-icon" style="background:linear-gradient(135deg,#16a34a,#15803d);"><i class="fas fa-server"></i></span>
+                            <div>
+                                <h4 class="backup-section-title" style="color:#15803d;">☁️ 클라우드 데이터 현황</h4>
+                                <p class="backup-section-desc">이 프로젝트의 모든 설정·데이터는 클라우드 DB에 저장됩니다. 어느 기기에서 로그인해도 동일한 데이터에 접근할 수 있습니다.</p>
+                            </div>
+                        </div>
+                        <div id="db-stats-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin-bottom:10px;">
+                            <div style="text-align:center;padding:10px;"><i class="fas fa-spinner fa-spin" style="color:#16a34a;"></i><br><small>조회 중...</small></div>
+                        </div>
+                        <div style="background:#f0fdf4;border-radius:8px;padding:10px 14px;font-size:12px;color:#15803d;line-height:1.7;">
+                            <i class="fas fa-info-circle"></i>
+                            <strong>현재 요금제 안내</strong><br>
+                            • 이 플랫폼의 DB(RESTful Table API)는 클라우드 기반으로 운영됩니다.<br>
+                            • 텍스트/메타 데이터는 무제한에 가깝게 저장 가능하며, <code>file_data</code>(Base64 파일 본체)가 주요 용량을 차지합니다.<br>
+                            • 정확한 DB 용량 한도는 <strong>Publish 탭 → 플랜 설정</strong>에서 확인하세요.<br>
+                            • 대용량 파일은 청크 분할 저장으로 처리됩니다.
+                        </div>
+                        <div style="text-align:right;margin-top:8px;">
+                            <button onclick="loadDbStats()" style="background:none;border:1px solid #86efac;border-radius:8px;padding:5px 14px;font-size:12px;color:#16a34a;cursor:pointer;font-weight:600;">
+                                <i class="fas fa-sync-alt"></i> 현황 새로고침
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- ① 백업 섹션 -->
+                    <div class="backup-section">
+                        <div class="backup-section-header">
+                            <span class="backup-section-icon" style="background:linear-gradient(135deg,#3b82f6,#2563eb);"><i class="fas fa-download"></i></span>
+                            <div>
+                                <h4 class="backup-section-title">데이터 백업 (JSON 다운로드 + ☁️ 클라우드 저장)</h4>
+                                <p class="backup-section-desc">백업 시 로컬 파일 다운로드와 동시에 클라우드 DB에도 이력이 저장됩니다. 어느 기기에서나 백업 이력을 확인할 수 있습니다.</p>
+                            </div>
+                        </div>
+                        <div class="backup-table-list" id="backup-table-list">
+                            <!-- JS로 렌더링 -->
+                        </div>
+                        <div class="backup-btn-row">
+                            <button class="backup-btn-main" onclick="backupAllTables()">
+                                <i class="fas fa-file-archive"></i> 전체 백업 (모든 테이블 ZIP)
+                            </button>
+                        </div>
+                        <div id="backup-progress" style="display:none;" class="backup-progress-wrap">
+                            <div class="backup-progress-bar"><div class="backup-progress-fill" id="backup-progress-fill"></div></div>
+                            <p class="backup-progress-text" id="backup-progress-text">준비 중...</p>
+                        </div>
+                    </div>
+
+                    <!-- ① - ② 클라우드 백업 이력 섹션 -->
+                    <div class="backup-section" id="cloud-backup-section">
+                        <div class="backup-section-header">
+                            <span class="backup-section-icon" style="background:linear-gradient(135deg,#7c3aed,#5b21b6);"><i class="fas fa-cloud"></i></span>
+                            <div>
+                                <h4 class="backup-section-title">☁️ 클라우드 백업 이력</h4>
+                                <p class="backup-section-desc">백업 시 자동으로 DB에도 저장됩니다. 어느 기기에서나 이력을 확인할 수 있습니다. 최근 30건 유지.</p>
+                            </div>
+                        </div>
+                        <div id="cloud-backup-list" style="margin-top:10px;font-size:12px;color:#64748b;">
+                            <div style="text-align:center;padding:16px;"><i class="fas fa-spinner fa-spin"></i> 이력 불러오는 중...</div>
+                        </div>
+                        <div style="margin-top:8px;text-align:right;">
+                            <button onclick="loadCloudBackupList()" style="background:none;border:1px solid #e2e8f0;border-radius:8px;padding:5px 14px;font-size:12px;color:#7c3aed;cursor:pointer;font-weight:600;">
+                                <i class="fas fa-sync-alt"></i> 새로고침
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- ② 복구 섹션 -->
+                    <div class="backup-section">
+                        <div class="backup-section-header">
+                            <span class="backup-section-icon" style="background:linear-gradient(135deg,#f59e0b,#d97706);"><i class="fas fa-upload"></i></span>
+                            <div>
+                                <h4 class="backup-section-title">데이터 복구 (JSON 업로드 또는 ☁️ 클라우드 복원)</h4>
+                                <p class="backup-section-desc">이전에 백업한 JSON 파일을 업로드하거나, 클라우드에 저장된 백업 시점을 직접 선택해 복구합니다.</p>
+                            </div>
+                        </div>
+
+                        <!-- ☁️ 클라우드 복원 지점 선택 안내 박스 -->
+                        <div style="background:linear-gradient(135deg,#ede9fe,#ddd6fe);border:1px solid #c4b5fd;border-radius:12px;padding:14px 16px;margin-bottom:14px;">
+                            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                                <div style="flex:1;min-width:200px;">
+                                    <div style="font-weight:700;color:#5b21b6;font-size:13px;margin-bottom:4px;">
+                                        <i class="fas fa-cloud-download-alt"></i> ☁️ 클라우드에서 복원 시점 선택
+                                    </div>
+                                    <div style="font-size:12px;color:#6d28d9;line-height:1.6;">
+                                        위 <strong>클라우드 백업 이력</strong>에서 원하는 시점의 <strong style="color:#5b21b6;">복원</strong> 버튼을 누르면<br>
+                                        아래 복구 버튼이 자동으로 활성화됩니다. 파일을 직접 올릴 필요가 없습니다.
+                                    </div>
+                                </div>
+                                <button onclick="document.getElementById('cloud-backup-section').scrollIntoView({behavior:'smooth',block:'start'})"
+                                    style="background:linear-gradient(135deg,#7c3aed,#5b21b6);color:white;border:none;border-radius:10px;padding:9px 18px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;">
+                                    <i class="fas fa-arrow-up"></i> 백업 이력으로 이동
+                                </button>
+                            </div>
+                            <div style="margin-top:10px;font-size:11px;color:#7c3aed;background:rgba(255,255,255,0.5);border-radius:8px;padding:7px 12px;">
+                                📌 <strong>복원 순서:</strong>
+                                <span style="color:#4c1d95;">① 위 이력에서 시점 선택 → ② [복원] 버튼 클릭 → ③ 아래에서 "비우고 복구" 또는 "추가 복구" 선택</span>
+                            </div>
+                        </div>
+
+                        <!-- 구분선 + 직접 업로드 레이블 -->
+                        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+                            <div style="flex:1;height:1px;background:#e2e8f0;"></div>
+                            <span style="font-size:11px;color:#94a3b8;white-space:nowrap;">또는 직접 JSON 파일 업로드</span>
+                            <div style="flex:1;height:1px;background:#e2e8f0;"></div>
+                        </div>
+
+                        <!-- 순서 안내 -->
+                        <div class="restore-guide-steps">
+                            <div class="restore-guide-step">
+                                <span class="restore-step-num">1</span>
+                                <span class="restore-step-txt">아래에서 백업 JSON 파일을 선택하세요</span>
+                            </div>
+                            <div class="restore-guide-arrow">→</div>
+                            <div class="restore-guide-step">
+                                <span class="restore-step-num">2</span>
+                                <span class="restore-step-txt">복구 방식을 선택하세요</span>
+                            </div>
+                            <div class="restore-guide-arrow">→</div>
+                            <div class="restore-guide-step">
+                                <span class="restore-step-num">3</span>
+                                <span class="restore-step-txt">복구 완료 확인</span>
+                            </div>
+                        </div>
+
+                        <!-- 드롭존 -->
+                        <div class="restore-drop-zone" id="restore-drop-zone"
+                             ondragover="event.preventDefault();this.classList.add('dragover')"
+                             ondragleave="this.classList.remove('dragover')"
+                             ondrop="handleRestoreDrop(event)">
+                            <i class="fas fa-file-import" style="font-size:32px;opacity:0.4;margin-bottom:8px;"></i>
+                            <p style="margin:0 0 10px;font-size:13px;color:#6b7280;">백업 JSON 파일을 여기에 드래그하거나</p>
+                            <label class="restore-select-label" for="restore-file-input">
+                                <i class="fas fa-folder-open"></i> 파일 선택
+                            </label>
+                            <input type="file" id="restore-file-input" accept=".json" style="display:none;" onchange="handleRestoreFileSelect(event)">
+                        </div>
+
+                        <!-- 파일 미선택 시 항상 보이는 버튼 영역 -->
+                        <div id="restore-btn-area" class="restore-btn-area">
+                            <div class="restore-btn-desc">
+                                <i class="fas fa-info-circle" style="color:#6b7280;"></i>
+                                <span id="restore-file-status-msg" style="color:#9ca3af;font-size:12px;">파일을 선택하면 아래 버튼이 활성화됩니다.</span>
+                            </div>
+                            <!-- 미리보기 (파일 선택 후 표시) -->
+                            <div id="restore-preview" style="display:none;" class="restore-preview-box">
+                                <div class="restore-preview-header">
+                                    <i class="fas fa-info-circle" style="color:#3b82f6;"></i>
+                                    <span id="restore-preview-info">파일 정보</span>
+                                    <button onclick="clearRestoreFile()" style="background:none;border:none;cursor:pointer;color:#9ca3af;margin-left:auto;" title="파일 선택 취소"><i class="fas fa-times"></i> 파일 취소</button>
+                                </div>
+                                <div id="restore-preview-list" class="restore-preview-list"></div>
+                            </div>
+                            <!-- 복구 방식 선택 안내 -->
+                            <div class="restore-mode-guide">
+                                <div class="restore-mode-card restore-mode-replace">
+                                    <div class="restore-mode-icon"><i class="fas fa-redo"></i></div>
+                                    <div class="restore-mode-info">
+                                        <strong>비우고 복구 <span class="restore-mode-badge restore-mode-badge-green">권장</span></strong>
+                                        <p>기존 데이터를 모두 삭제한 후 복구 파일의 데이터로 완전히 교체합니다.<br><em style="color:#16a34a;">데이터가 날아갔거나 새로 시작할 때 사용하세요.</em></p>
+                                    </div>
+                                    <button class="restore-action-btn restore-action-btn-green" id="restore-replace-btn" onclick="submitRestore(true)" disabled>
+                                        <i class="fas fa-redo"></i> 비우고 복구
+                                    </button>
+                                </div>
+                                <div class="restore-mode-card restore-mode-add">
+                                    <div class="restore-mode-icon" style="background:#eff6ff;color:#3b82f6;"><i class="fas fa-plus-circle"></i></div>
+                                    <div class="restore-mode-info">
+                                        <strong>추가 복구</strong>
+                                        <p>기존 데이터는 유지하고, 중복 ID를 제외한 새 데이터만 추가합니다.<br><em style="color:#6b7280;">일부 데이터만 보충할 때 사용하세요.</em></p>
+                                    </div>
+                                    <button class="restore-action-btn restore-action-btn-blue" id="restore-submit-btn" onclick="submitRestore(false)" disabled>
+                                        <i class="fas fa-plus-circle"></i> 추가 복구
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="restore-progress" style="display:none;" class="backup-progress-wrap">
+                            <div class="backup-progress-bar"><div class="backup-progress-fill" id="restore-progress-fill"></div></div>
+                            <p class="backup-progress-text" id="restore-progress-text">복구 중...</p>
+                        </div>
+                    </div>
+
+                    <!-- ③ 개별 테이블 초기화 -->
+                    <div class="backup-section">
+                        <div class="backup-section-header">
+                            <span class="backup-section-icon" style="background:linear-gradient(135deg,#ef4444,#dc2626);"><i class="fas fa-trash-alt"></i></span>
+                            <div>
+                                <h4 class="backup-section-title">개별 테이블 초기화</h4>
+                                <p class="backup-section-desc">특정 테이블의 데이터만 삭제합니다. <strong style="color:#ef4444;">삭제 후 복구하려면 반드시 백업 파일이 있어야 합니다.</strong></p>
+                            </div>
+                        </div>
+                        <div class="clear-table-grid" id="clear-table-grid">
+                            <!-- JS로 렌더링 -->
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- GitHub 연동 탭 -->
+            <div id="admin-tab-github" class="admin-tab-content">
+                <div style="padding:4px 0 16px;">
+                    <h4 style="font-size:15px;font-weight:700;color:#1e293b;margin-bottom:4px;">
+                        <i class="fab fa-github" style="color:#24292f;"></i> GitHub 파일 스토리지 연동
+                    </h4>
+                    <p style="font-size:12px;color:#6b7280;margin-bottom:16px;">
+                        관리자 패널에서 업로드하는 서식 파일은 GitHub 레포지토리에 저장됩니다.<br>
+                        DB에는 파일 경로(URL)만 저장되어 용량 제한 없이 무제한 업로드 가능합니다.
+                    </p>
+
+                    <!-- 현재 연동 상태 -->
+                    <div id="gh-status-box" style="background:#f1f5f9;border:1px solid #e2e8f0;border-radius:10px;padding:14px;margin-bottom:16px;">
+                        <div style="font-size:12px;color:#64748b;margin-bottom:6px;">현재 연동 상태</div>
+                        <div id="gh-status-text" style="font-size:13px;font-weight:600;color:#374151;">확인 중...</div>
+                        <div id="gh-repo-text" style="font-size:12px;color:#6b7280;margin-top:4px;"></div>
+                    </div>
+
+                    <!-- Token 입력 -->
+                    <div class="auth-field" style="margin-bottom:10px;">
+                        <label style="font-size:12px;font-weight:600;color:#374151;margin-bottom:4px;display:block;">
+                            <i class="fas fa-key"></i> GitHub Personal Access Token
+                        </label>
+                        <input type="password" id="gh-token-input" placeholder="ghp_로 시작하는 토큰"
+                            style="width:100%;padding:10px 12px;border:1px solid #d1d5db;border-radius:8px;font-size:13px;box-sizing:border-box;">
+                        <p style="font-size:11px;color:#9ca3af;margin-top:4px;">
+                            GitHub → Settings → Developer settings → Personal access tokens → Classic → repo 권한 필요
+                        </p>
+                    </div>
+
+                    <!-- Repo 이름 -->
+                    <div class="auth-field" style="margin-bottom:16px;">
+                        <label style="font-size:12px;font-weight:600;color:#374151;margin-bottom:4px;display:block;">
+                            <i class="fas fa-folder"></i> 레포지토리 (owner/repo)
+                        </label>
+                        <input type="text" id="gh-repo-input" placeholder="username/repo-name" value="daqdaegarie-hash/after-forms-storage"
+                            style="width:100%;padding:10px 12px;border:1px solid #d1d5db;border-radius:8px;font-size:13px;box-sizing:border-box;">
+                    </div>
+
+                    <!-- 버튼들 -->
+                    <div style="display:flex;flex-direction:column;gap:8px;">
+                        <button onclick="adminGithubTest()" style="padding:10px;background:#24292f;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;">
+                            <i class="fab fa-github"></i> 연결 테스트
+                        </button>
+                        <button onclick="adminGithubSave()" style="padding:10px;background:#2563eb;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;">
+                            <i class="fas fa-save"></i> 토큰 저장 (DB + 로컬)
+                        </button>
+                    </div>
+
+                    <div id="gh-result-msg" style="margin-top:12px;font-size:12px;min-height:20px;"></div>
+
+                    <!-- 안내 -->
+                    <div style="margin-top:20px;background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:12px;">
+                        <div style="font-size:12px;font-weight:700;color:#92400e;margin-bottom:6px;">📌 GitHub 연동 안내</div>
+                        <ul style="font-size:11px;color:#78350f;padding-left:16px;margin:0;line-height:1.9;">
+                            <li>레포가 없으면 <strong>연결 테스트</strong> 클릭 시 자동 생성됩니다</li>
+                            <li>404 오류 → 토큰 계정명과 레포 필드의 owner가 다른 경우<br>
+                                &nbsp;&nbsp;→ 연결 테스트 후 안내 메시지의 계정명으로 레포 필드를 수정하세요</li>
+                            <li>토큰 권한: GitHub → Settings → Developer settings →<br>
+                                &nbsp;&nbsp;Personal access tokens → Classic → <strong>repo</strong> 체크 필수</li>
+                            <li>토큰은 DB(app_config)에 저장 / Rebuild DB 후 자동 복구</li>
+                            <li>파일 저장 위치: <code>forms/부서명/타임스탬프_파일명</code></li>
+                        </ul>
+                    </div>
+                    <!-- 진단 결과 표시 영역 -->
+                    <div id="gh-diag-box" style="display:none;margin-top:12px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:12px;font-size:12px;color:#166534;"></div>
+                </div>
+            </div>
+
+            <!-- 하단 패널 닫기 버튼 -->
+            <div style="padding:16px 24px;border-top:1px solid #e5e7eb;display:flex;justify-content:center;">
+                <button onclick="closeAdminModal()" style="padding:10px 32px;background:#6b7280;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:8px;">
+                    <i class="fas fa-times-circle"></i> 관리자 패널 닫기
+                </button>
+            </div>
+
+            <button class="auth-close" onclick="closeAdminModal()"><i class="fas fa-times"></i></button>
+        </div>
+    </div>
+</div>
+
+<!-- 회원 정보 수정 모달 -->
+<div id="member-edit-modal" class="member-edit-modal hidden">
+    <div class="member-edit-box">
+        <h3><i class="fas fa-user-edit"></i> 회원 정보 수정</h3>
+        <input type="hidden" id="me-user-record-id">
+        <div class="member-edit-row">
+            <label>아이디</label>
+            <input type="text" id="me-user-id" readonly style="opacity:0.6;cursor:not-allowed;">
+        </div>
+        <div class="member-edit-row">
+            <label>성명</label>
+            <input type="text" id="me-full-name" placeholder="성명 입력">
+        </div>
+        <div class="member-edit-row">
+            <label>이메일</label>
+            <input type="email" id="me-email" placeholder="이메일">
+        </div>
+        <div class="member-edit-row">
+            <label>소속 학교</label>
+            <input type="text" id="me-school" placeholder="소속 학교">
+        </div>
+        <div class="member-edit-row">
+            <label>승인 상태</label>
+            <select id="me-approved">
+                <option value="true">승인됨</option>
+                <option value="false">미승인</option>
+            </select>
+        </div>
+        <div class="member-edit-row">
+            <label>역할</label>
+            <select id="me-role">
+                <option value="user">일반 회원</option>
+                <option value="admin">관리자</option>
+            </select>
+        </div>
+        <div class="member-edit-row">
+            <label>포인트</label>
+            <input type="number" id="me-points" min="0" placeholder="0">
+        </div>
+        <div class="member-edit-row">
+            <label>이용 만료일 <span style="font-size:11px;color:#6b7280;">(비워두면 현재 날짜 유지)</span></label>
+            <input type="date" id="me-expires-at">
+        </div>
+        <div class="member-edit-btns">
+            <button class="me-cancel-btn" onclick="closeMemberEditModal()">취소</button>
+            <button class="me-save-btn" onclick="saveMemberEdit()"><i class="fas fa-save"></i> 저장</button>
+        </div>
+    </div>
+</div>
+
+<!-- 관리자: 회원 직접 추가 모달 -->
+<div id="add-member-modal" class="member-edit-modal hidden">
+    <div class="member-edit-box">
+        <h3><i class="fas fa-user-plus"></i> 회원 직접 추가</h3>
+        <p style="font-size:12px;color:#6b7280;margin-bottom:14px;">⚠️ DB 재구축 후 날아간 회원을 복구하거나 직접 등록할 때 사용합니다.</p>
+        <div class="member-edit-row">
+            <label>아이디 <span style="color:red">*</span></label>
+            <input type="text" id="add-user-id" placeholder="영문+숫자 4~20자">
+        </div>
+        <div class="member-edit-row">
+            <label>비밀번호 <span style="color:red">*</span></label>
+            <input type="password" id="add-user-pw" placeholder="임시 비밀번호 입력">
+        </div>
+        <div class="member-edit-row">
+            <label>성명</label>
+            <input type="text" id="add-user-fullname" placeholder="실명">
+        </div>
+        <div class="member-edit-row">
+            <label>이메일</label>
+            <input type="email" id="add-user-email" placeholder="이메일">
+        </div>
+        <div class="member-edit-row">
+            <label>소속 학교</label>
+            <input type="text" id="add-user-school" placeholder="소속 학교">
+        </div>
+        <div class="member-edit-row">
+            <label>승인 상태</label>
+            <select id="add-user-approved">
+                <option value="true">즉시 승인</option>
+                <option value="false">미승인</option>
+            </select>
+        </div>
+        <div class="member-edit-btns">
+            <button class="me-cancel-btn" onclick="closeAddMemberModal()">취소</button>
+            <button class="me-save-btn" onclick="adminAddMember()"><i class="fas fa-save"></i> 추가</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== 프로필 모달 ===== -->
+<div id="profile-modal" class="auth-modal-overlay hidden">
+    <div class="auth-modal-box" style="max-width:420px;">
+        <div class="auth-header" style="padding:24px 24px 0;">
+            <div class="auth-logo" style="background:linear-gradient(135deg,#6366f1,#4f46e5);">
+                <i class="fas fa-user-circle" style="font-size:20px;"></i>
+            </div>
+            <h3 id="profile-user-id" style="font-size:18px;margin-top:8px;">사용자</h3>
+            <p id="profile-user-name" style="color:#6b7280;font-size:13px;"></p>
+        </div>
+        <div class="auth-form" style="padding:16px 24px 24px;">
+            <!-- 기본 정보 카드 -->
+            <div class="profile-info-grid">
+                <div class="profile-info-item">
+                    <span class="pi-label"><i class="fas fa-school"></i> 소속 학교</span>
+                    <span class="pi-value" id="profile-school-val">-</span>
+                </div>
+                <div class="profile-info-item">
+                    <span class="pi-label"><i class="fas fa-coins"></i> 보유 포인트</span>
+                    <span class="pi-value" id="profile-points-val" style="color:#f59e0b;font-weight:700;">0P</span>
+                </div>
+                <div class="profile-info-item" style="grid-column:1/-1;">
+                    <span class="pi-label"><i class="fas fa-calendar-check"></i> 이용 만료일</span>
+                    <span class="pi-value" id="profile-expiry-val">-</span>
+                </div>
+            </div>
+
+            <!-- 이용 기간 연장 버튼 -->
+            <button class="btn-purchase-access-btn" id="btn-purchase-access">
+                <i class="fas fa-calendar-plus"></i> 1,500P로 1개월 연장
+            </button>
+
+            <!-- 비밀번호 변경 토글 -->
+            <button class="profile-section-toggle" onclick="toggleProfilePanel('profile-panel-pw')">
+                <i class="fas fa-key"></i> 비밀번호 변경 <i class="fas fa-chevron-down" style="margin-left:auto;font-size:11px;"></i>
+            </button>
+            <div id="profile-panel-pw" style="display:none;padding:12px 0 0;">
+                <div class="auth-field" style="margin-bottom:8px;">
+                    <label style="font-size:12px;">새 비밀번호 (8자 이상, 영문+숫자+특수문자)</label>
+                    <input type="password" id="profile-new-pw" placeholder="새 비밀번호">
+                </div>
+                <div class="auth-field" style="margin-bottom:10px;">
+                    <label style="font-size:12px;">새 비밀번호 확인</label>
+                    <input type="password" id="profile-new-pw2" placeholder="비밀번호 재입력">
+                </div>
+                <button class="btn-primary" style="width:100%;justify-content:center;" id="btn-change-pw">
+                    <i class="fas fa-key"></i> 비밀번호 변경
+                </button>
+            </div>
+
+            <!-- 학교 변경 토글 -->
+            <button class="profile-section-toggle" onclick="toggleProfilePanel('profile-panel-school')" style="margin-top:8px;">
+                <i class="fas fa-school"></i> 소속 학교 변경 <i class="fas fa-chevron-down" style="margin-left:auto;font-size:11px;"></i>
+            </button>
+            <div id="profile-panel-school" style="display:none;padding:12px 0 0;">
+                <div class="auth-field" style="margin-bottom:10px;">
+                    <label style="font-size:12px;">소속 학교</label>
+                    <input type="text" id="profile-school-inp" placeholder="소속 학교 입력" maxlength="60">
+                </div>
+                <button class="btn-primary" style="width:100%;justify-content:center;" id="btn-change-school">
+                    <i class="fas fa-school"></i> 학교 변경
+                </button>
+            </div>
+
+            <!-- 로그아웃 -->
+            <button class="btn-danger" style="width:100%;justify-content:center;margin-top:16px;" id="btn-profile-logout">
+                <i class="fas fa-sign-out-alt"></i> 로그아웃
+            </button>
+        </div>
+        <button class="auth-close" id="profile-modal-close"><i class="fas fa-times"></i></button>
+    </div>
+</div>
+
+<!-- 도움말 모달 -->
+<div id="help-modal" class="modal hidden">
+    <div class="modal-overlay" id="help-overlay"></div>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>📖 사용 방법</h3>
+            <button class="modal-close" id="close-help"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+            <div class="help-step"><div class="help-step-num">1</div><div class="help-step-content"><p class="help-step-title">회원가입 & 관리자 승인</p><p class="help-step-desc">회원가입 후 관리자가 승인하면 서비스를 이용할 수 있습니다.</p></div></div>
+            <div class="help-step"><div class="help-step-num">2</div><div class="help-step-content"><p class="help-step-title">부서 선택</p><p class="help-step-desc">홈 화면에서 궁금한 부서 카드를 클릭하세요.</p></div></div>
+            <div class="help-step"><div class="help-step-num">3</div><div class="help-step-content"><p class="help-step-title">구체적으로 질문</p><p class="help-step-desc">상황, 대상, 원하는 정보를 구체적으로 입력할수록 정확한 답변을 받습니다.</p></div></div>
+            <div class="help-step"><div class="help-step-num">4</div><div class="help-step-content"><p class="help-step-title">서식 자료실</p><p class="help-step-desc">서식 파일을 업로드하고 다운로드할 수 있습니다. 본인이 업로드한 파일만 삭제 가능합니다.</p></div></div>
+            <div class="help-manual-links">
+                <p class="help-manual-title"><i class="fas fa-book-open"></i> 자세한 매뉴얼 보기</p>
+                <div class="help-manual-btns">
+                    <button class="help-manual-btn user" onclick="document.getElementById('help-modal').classList.add('hidden');openManualModal('user')">
+                        <i class="fas fa-user"></i> 사용자 매뉴얼
+                    </button>
+                    <button class="help-manual-btn admin" onclick="document.getElementById('help-modal').classList.add('hidden');openManualModal('admin')" id="help-admin-manual-btn">
+                        <i class="fas fa-shield-alt"></i> 관리자 매뉴얼
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================
+     첫 로그인 튜토리얼 모달
+     ============================================================ -->
+<div id="tutorial-overlay" class="tutorial-overlay hidden">
+    <div class="tutorial-modal">
+
+        <!-- 진행 바 -->
+        <div class="tutorial-progress-bar">
+            <div class="tutorial-progress-fill" id="tutorial-progress-fill"></div>
+        </div>
+
+        <!-- 단계 인디케이터 -->
+        <div class="tutorial-steps-indicator">
+            <div class="tut-step-dot active" data-step="0"></div>
+            <div class="tut-step-dot" data-step="1"></div>
+            <div class="tut-step-dot" data-step="2"></div>
+            <div class="tut-step-dot" data-step="3"></div>
+        </div>
+
+        <!-- ── STEP 0: 환영 ── -->
+        <div class="tutorial-slide active" id="tut-slide-0">
+            <div class="tut-welcome-icon">🎓</div>
+            <h2 class="tut-title">나와라, 만능 교감!</h2>
+            <p class="tut-subtitle">경남 교직원 AI 업무 도우미에 오신 것을<br>진심으로 환영합니다 🎉</p>
+            <div class="tut-welcome-cards">
+                <div class="tut-welcome-card">
+                    <span class="tut-wc-icon">🤖</span>
+                    <span class="tut-wc-text">Gemini AI 기반<br>스마트 업무 지원</span>
+                </div>
+                <div class="tut-welcome-card">
+                    <span class="tut-wc-icon">📁</span>
+                    <span class="tut-wc-text">789개+ 경남교육청<br>서식 자료실</span>
+                </div>
+                <div class="tut-welcome-card">
+                    <span class="tut-wc-icon">💬</span>
+                    <span class="tut-wc-text">교직원 간<br>정보 공유 게시판</span>
+                </div>
+            </div>
+            <p class="tut-welcome-note">✨ 약 1분간의 안내로 훨씬 편리하게 사용하실 수 있어요!</p>
+        </div>
+
+        <!-- ── STEP 1: 회원가입 & 포인트 ── -->
+        <div class="tutorial-slide" id="tut-slide-1">
+            <div class="tut-slide-header">
+                <span class="tut-step-badge">STEP 1</span>
+                <h2 class="tut-title">회원 가입 &amp; 포인트 운영제 안내</h2>
+            </div>
+            <div class="tut-section">
+                <div class="tut-info-row">
+                    <span class="tut-info-icon">📝</span>
+                    <div>
+                        <p class="tut-info-title">회원가입 → 관리자 승인 → 서비스 이용</p>
+                        <p class="tut-info-desc">가입 신청 후 관리자 승인이 완료되면 1개월 이용권과 함께 서비스가 개시됩니다.</p>
+                    </div>
+                </div>
+                <div class="tut-info-row">
+                    <span class="tut-info-icon">🪙</span>
+                    <div>
+                        <p class="tut-info-title">포인트 시스템</p>
+                        <div class="tut-point-grid">
+                            <div class="tut-point-item gain">
+                                <span class="tut-pt-badge plus">+1,000P</span>
+                                <span>신규 가입 기본 지급</span>
+                            </div>
+                            <div class="tut-point-item gain">
+                                <span class="tut-pt-badge plus">+100P</span>
+                                <span>자료 업로드 (승인 시)</span>
+                            </div>
+                            <div class="tut-point-item lose">
+                                <span class="tut-pt-badge minus">-10P</span>
+                                <span>AI 질문 1회</span>
+                            </div>
+                            <div class="tut-point-item lose">
+                                <span class="tut-pt-badge minus">-1,500P</span>
+                                <span>이용 기간 1개월 연장</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tut-info-row">
+                    <span class="tut-info-icon">⏰</span>
+                    <div>
+                        <p class="tut-info-title">이용 기간 관리</p>
+                        <p class="tut-info-desc">만료 7일 전 경고 배너가 나타납니다. <strong>1,500P</strong>를 사용해 언제든지 1개월 연장 가능하며, 자료를 많이 업로드할수록 더 오래 이용할 수 있습니다! 🙌</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── STEP 2: 질문하는 방법 ── -->
+        <div class="tutorial-slide" id="tut-slide-2">
+            <div class="tut-slide-header">
+                <span class="tut-step-badge">STEP 2</span>
+                <h2 class="tut-title">AI에게 질문하는 방법</h2>
+            </div>
+            <div class="tut-section">
+
+                <div class="tut-tip-box">
+                    <p class="tut-tip-title">🔑 핵심 키워드 입력으로 답변 품질 UP!</p>
+                    <p class="tut-tip-desc">질문 위쪽의 <strong>키워드 입력창</strong>(최대 3개)에 핵심 단어를 먼저 입력하세요.<br>AI가 해당 키워드 중심으로 답변하고, 자료실에서도 더 관련된 자료를 보여줍니다.</p>
+                    <div class="tut-kw-example">
+                        <span class="tut-kw-tag">📌 학교폭력</span>
+                        <span class="tut-kw-tag">📌 심의위원회</span>
+                        <span class="tut-kw-tag">📌 처리절차</span>
+                    </div>
+                </div>
+
+                <p class="tut-section-label">💡 이렇게 질문하면 훨씬 좋은 답변을 받아요!</p>
+                <div class="tut-examples">
+                    <div class="tut-ex-item">
+                        <span class="tut-ex-badge good">✅ 예시 1</span>
+                        <p class="tut-ex-text">"학교폭력 사건이 접수되었을 때 교감으로서 처음 해야 할 절차와, 학교폭력대책심의위원회 개최 요건, 피해학생 보호 조치 관련 필요한 서류가 무엇인지 알려주세요. <em class="tut-ex-highlight">답변 내용을 바탕으로 보고 기안문 초안과 첨부할 심의 개최 계획서도 작성해 주세요.</em>"</p>
+                    </div>
+                    <div class="tut-ex-item">
+                        <span class="tut-ex-badge good">✅ 예시 2</span>
+                        <p class="tut-ex-text">"신규 교원이 3월에 부임했을 때 교감으로서 해야 할 학교 적응 지원 업무(멘토링, 연수, 첫 수업 참관 등)와 관련 공문 처리 방법을 단계별로 알려주세요. <em class="tut-ex-highlight">기안문 양식과 함께 신규 교사 적응 지원 계획서 초안도 만들어 주세요.</em>"</p>
+                    </div>
+                    <div class="tut-ex-item">
+                        <span class="tut-ex-badge good">✅ 예시 3</span>
+                        <p class="tut-ex-text">"2학기 학교스포츠클럽 리그 운영 계획을 세우려고 합니다. 예산 편성, 강사 선발, 학생 참가 신청, 결과 보고 절차를 순서대로 알려주세요. <em class="tut-ex-highlight">전체 내용을 담은 공문 기안문과 운영 계획서 초안도 함께 작성해 주세요.</em>"</p>
+                    </div>
+                    <div class="tut-ex-item">
+                        <span class="tut-ex-badge good">✅ 예시 4</span>
+                        <p class="tut-ex-text">"영재학급 학생 선발 과정에서 학부모가 선발 기준에 이의를 제기했을 때 교감으로서 처리해야 할 대응 절차와 유의 사항을 알려주세요. <em class="tut-ex-highlight">학부모 이의 처리 결과 보고 기안문과 회신 공문 초안도 함께 만들어 주세요.</em>"</p>
+                    </div>
+                </div>
+
+                <div class="tut-remind-box">
+                    <p>💬 <strong>질문 끝에 항상 추가해 보세요!</strong></p>
+                    <p class="tut-remind-quote">"답변에 대한 기안문과 첨부 붙임문서로 쓸 계획서 초안을 만들어줘"</p>
+                    <p class="tut-remind-sub">→ AI가 실제 업무에 바로 활용할 수 있는 공문서 초안까지 함께 작성해 드립니다!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── STEP 3: 히스토리 & 게시판 ── -->
+        <div class="tutorial-slide" id="tut-slide-3">
+            <div class="tut-slide-header">
+                <span class="tut-step-badge">STEP 3</span>
+                <h2 class="tut-title">히스토리 &amp; 게시판 활용</h2>
+            </div>
+            <div class="tut-section">
+
+                <div class="tut-feature-block">
+                    <div class="tut-feature-icon-wrap">🕐</div>
+                    <div>
+                        <p class="tut-feature-title">히스토리 스마트 활용</p>
+                        <p class="tut-feature-desc">상단 <strong>히스토리 탭</strong>에서 이전에 나눴던 대화를 언제든지 다시 볼 수 있습니다.</p>
+                        <ul class="tut-feature-list">
+                            <li>💡 <strong>이전 질문을 클릭</strong>하면 대화 전체가 복원되어 이어서 채팅도 가능해요.</li>
+                            <li>💡 <strong>비슷한 상황</strong>이 생겼을 때 이전 답변을 참고해 새 질문을 다듬어보세요.</li>
+                            <li>💡 <strong>"이 내용에서 △△만 바꿔서 다시 알려줘"</strong>처럼 이어 질문하면 더 정확해집니다.</li>
+                            <li>💡 <strong>다른 선생님들의 질문 패턴</strong>을 히스토리에서 참고해 나만의 질문 스타일을 만들어보세요.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="tut-divider"></div>
+
+                <div class="tut-feature-block">
+                    <div class="tut-feature-icon-wrap">💬</div>
+                    <div>
+                        <p class="tut-feature-title">게시판 – 함께 만드는 지식 공간</p>
+                        <p class="tut-feature-desc"><strong>게시판 탭</strong>에서 동료 선생님들과 소통하고 유용한 정보를 나눠보세요!</p>
+                        <div class="tut-board-cats">
+                            <div class="tut-board-cat">
+                                <span class="tut-cat-icon">💡</span>
+                                <div>
+                                    <p class="tut-cat-name">제안</p>
+                                    <p class="tut-cat-desc">서비스 개선 아이디어, 추가했으면 하는 기능을 자유롭게 건의하세요.</p>
+                                </div>
+                            </div>
+                            <div class="tut-board-cat">
+                                <span class="tut-cat-icon">❓</span>
+                                <div>
+                                    <p class="tut-cat-name">문의</p>
+                                    <p class="tut-cat-desc">사용 중 궁금한 점이나 오류를 남기면 관리자가 확인하고 답변합니다.</p>
+                                </div>
+                            </div>
+                            <div class="tut-board-cat">
+                                <span class="tut-cat-icon">📂</span>
+                                <div>
+                                    <p class="tut-cat-name">자료 요청</p>
+                                    <p class="tut-cat-desc">필요한 서식이나 자료가 있으면 요청하세요. 다른 선생님이 공유해 줄 수 있어요.</p>
+                                </div>
+                            </div>
+                            <div class="tut-board-cat">
+                                <span class="tut-cat-icon">📢</span>
+                                <div>
+                                    <p class="tut-cat-name">일반</p>
+                                    <p class="tut-cat-desc">업무 팁, 유용한 정보, 경험담 등 선생님들과 자유롭게 나눠보세요.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 완료 메시지 -->
+                <div class="tut-finish-box">
+                    <p class="tut-finish-emoji">🚀</p>
+                    <p class="tut-finish-title">준비 완료! 지금 바로 시작해보세요</p>
+                    <p class="tut-finish-desc">홈 화면에서 부서를 선택하고 첫 질문을 던져보세요.<br>나와라, 만능 교감!이 즉시 도와드립니다!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── 하단 네비게이션 ── -->
+        <div class="tutorial-nav">
+            <button class="tut-btn-skip" id="tut-skip-btn" onclick="closeTutorial()">건너뛰기</button>
+            <div class="tut-nav-right">
+                <button class="tut-btn-prev hidden" id="tut-prev-btn" onclick="tutPrev()">
+                    <i class="fas fa-chevron-left"></i> 이전
+                </button>
+                <button class="tut-btn-next" id="tut-next-btn" onclick="tutNext()">
+                    다음 <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- 토스트 -->
+<div id="toast" class="toast hidden"></div>
+
+<!-- ══════════════════════════════════════════════════════════
+     우클릭 컨텍스트 메뉴 (접속자 패널)
+══════════════════════════════════════════════════════════ -->
+<div id="user-context-menu" class="user-ctx-menu" style="display:none;">
+    <div class="user-ctx-header" id="user-ctx-header">사용자명</div>
+    <button class="user-ctx-item" id="user-ctx-note"><i class="fas fa-envelope"></i> 쪽지 보내기</button>
+    <button class="user-ctx-item" id="user-ctx-chat"><i class="fas fa-comments"></i> 대화하기</button>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     쪽지 보내기 모달
+══════════════════════════════════════════════════════════ -->
+<div id="note-send-modal" class="msg-modal-overlay" style="display:none;" onclick="if(event.target===this)closeNoteSend()">
+    <div class="msg-modal">
+        <div class="msg-modal-header">
+            <span><i class="fas fa-paper-plane"></i> 쪽지 보내기</span>
+            <button onclick="closeNoteSend()" class="msg-modal-close"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="msg-modal-body">
+            <div class="msg-to-row">
+                <span class="msg-to-label">받는 분</span>
+                <span class="msg-to-name" id="note-send-to-name">—</span>
+            </div>
+            <textarea id="note-send-content" class="msg-textarea" placeholder="쪽지 내용을 입력하세요 (최대 500자)" maxlength="500"></textarea>
+            <div class="msg-char-count"><span id="note-send-char">0</span>/500</div>
+        </div>
+        <div class="msg-modal-footer">
+            <button class="msg-btn msg-btn-cancel" onclick="closeNoteSend()">취소</button>
+            <button class="msg-btn msg-btn-send" id="note-send-btn" onclick="submitSendNote()">
+                <i class="fas fa-paper-plane"></i> 전송
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     쪽지함 모달 (받은/보낸 쪽지 목록)
+══════════════════════════════════════════════════════════ -->
+<div id="note-inbox-modal" class="msg-modal-overlay" style="display:none;" onclick="if(event.target===this)closeNoteInbox()">
+    <div class="msg-modal msg-modal-lg">
+        <div class="msg-modal-header">
+            <span><i class="fas fa-inbox"></i> 쪽지함</span>
+            <button onclick="closeNoteInbox()" class="msg-modal-close"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="msg-modal-tabs">
+            <button class="msg-tab active" id="inbox-tab-received" onclick="switchNoteTab('received')">
+                <i class="fas fa-envelope-open"></i> 받은 쪽지
+                <span class="note-unread-badge" id="inbox-unread-count" style="display:none;">0</span>
+            </button>
+            <button class="msg-tab" id="inbox-tab-sent" onclick="switchNoteTab('sent')">
+                <i class="fas fa-paper-plane"></i> 보낸 쪽지
+            </button>
+        </div>
+        <div class="msg-modal-body" style="padding:0;">
+            <div id="note-list-container" style="max-height:360px;overflow-y:auto;padding:12px;">
+                <div class="msg-loading"><i class="fas fa-spinner fa-spin"></i> 불러오는 중...</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     쪽지 읽기 모달
+══════════════════════════════════════════════════════════ -->
+<div id="note-read-modal" class="msg-modal-overlay" style="display:none;" onclick="if(event.target===this)closeNoteRead()">
+    <div class="msg-modal">
+        <div class="msg-modal-header">
+            <span><i class="fas fa-envelope-open-text"></i> 쪽지 내용</span>
+            <button onclick="closeNoteRead()" class="msg-modal-close"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="msg-modal-body" id="note-read-body">
+        </div>
+        <div class="msg-modal-footer">
+            <button class="msg-btn msg-btn-cancel" onclick="closeNoteRead()">닫기</button>
+            <button class="msg-btn msg-btn-send" id="note-read-reply-btn" onclick="replyToNote()">
+                <i class="fas fa-reply"></i> 답장
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     1:1 대화창 모달
+══════════════════════════════════════════════════════════ -->
+<div id="chat-with-modal" class="msg-modal-overlay" style="display:none;" onclick="if(event.target===this)closeChatWith()">
+    <div class="msg-modal msg-modal-chat">
+        <div class="msg-modal-header">
+            <span><i class="fas fa-comments"></i> <span id="chat-with-title">대화하기</span></span>
+            <button onclick="closeChatWith()" class="msg-modal-close"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="chat-with-messages" id="chat-with-messages">
+            <div class="msg-loading"><i class="fas fa-spinner fa-spin"></i> 대화 불러오는 중...</div>
+        </div>
+        <div class="chat-with-input-row">
+            <textarea id="chat-with-input" class="chat-with-input" placeholder="메시지를 입력하세요..." maxlength="300" rows="1"
+                onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();submitChatWith();}"></textarea>
+            <button class="chat-with-send-btn" onclick="submitChatWith()" title="전송 (Enter)">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+<!-- EmailJS: 회원가입 알림 이메일 발송 -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script src="js/knowledge.js?v=20260425_8000"></script>
+<script src="js/gemini.js?v=20260425_8000"></script>
+<script src="js/github.js?v=20260425_8000"></script>
+<script src="js/auth.js?v=20260425_8000"></script>
+<script src="js/seed_data.js?v=20260425_8000"></script>
+<script src="js/app.js?v=20260425_8000"></script>
+<script>
+    // ── Service Worker 완전 제거 + 컨텐츠 캐시 전체 삭제 ──
+    (async function() {
+        try {
+            if ('serviceWorker' in navigator) {
+                const regs = await navigator.serviceWorker.getRegistrations();
+                await Promise.all(regs.map(r => r.unregister()));
+                console.log('[AFTER] SW 제거 완료:', regs.length, '개');
+            }
+            if ('caches' in window) {
+                const keys = await caches.keys();
+                await Promise.all(keys.map(k => caches.delete(k)));
+                console.log('[AFTER] 캐시 삭제 완료:', keys.length, '개');
+            }
+            // ── 버전 불일치 시 강제 새로고침 ──
+            const CURRENT_VER = '20260406_1800';
+            const savedVer = localStorage.getItem('app_version');
+            if (savedVer && savedVer !== CURRENT_VER) {
+                localStorage.setItem('app_version', CURRENT_VER);
+                window.location.reload(true);
+            } else {
+                localStorage.setItem('app_version', CURRENT_VER);
+            }
+        } catch(e) { console.warn('[AFTER] SW/캐시 제거 오류:', e); }
+    })();
+</script>
+<script src="https://www.genspark.ai/sandbox_inspect.js"></script></body>
+</html>
