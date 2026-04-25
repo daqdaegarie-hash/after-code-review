@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AFTER 사용자 매뉴얼 v3.2</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{
+            --blue:#1a56db;--indigo:#4f46e5;--green:#059669;--orange:#d97706;
+            --red:#dc2626;--gray:#6b7280;--light:#f8fafc;--border:#e5e7eb;
+        }
+        body{font-family:'Noto Sans KR',sans-serif;line-height:1.8;color:#1e293b;background:#f1f5f9;font-size:14px}
+        a{color:var(--blue);text-decoration:none}
+        a:hover{text-decoration:underline}
+
+        /* 레이아웃 */
+        .page-wrap{max-width:880px;margin:0 auto;padding:0 20px 80px}
+
+        /* 표지 */
+        .cover{
+            min-height:100vh;display:flex;flex-direction:column;
+            justify-content:center;align-items:center;text-align:center;
+            background:linear-gradient(135deg,#1a56db 0%,#4f46e5 60%,#7c3aed 100%);
+            color:#fff;padding:60px 40px;page-break-after:always;
+        }
+        .cover-logo{
+            width:100px;height:100px;background:rgba(255,255,255,.2);
+            border:3px solid rgba(255,255,255,.5);border-radius:22px;
+            display:flex;align-items:center;justify-content:center;
+            font-size:52px;font-weight:900;margin-bottom:28px;
+        }
+        .cover h1{font-size:68px;font-weight:900;letter-spacing:-2px;margin-bottom:10px;text-shadow:0 4px 12px rgba(0,0,0,.2)}
+        .cover-en{font-size:13px;letter-spacing:3px;opacity:.75;margin-bottom:8px;text-transform:uppercase}
+        .cover-sub{font-size:20px;font-weight:500;opacity:.9;margin-bottom:40px}
+        .cover-divider{width:50px;height:3px;background:rgba(255,255,255,.4);margin:28px auto}
+        .cover-meta{font-size:14px;line-height:2.3;opacity:.85}
+        .cover-meta strong{color:#fde68a}
+
+        /* 목차 */
+        .toc-wrap{background:#fff;border-radius:20px;padding:36px;margin:28px 0;box-shadow:0 2px 12px rgba(0,0,0,.07)}
+        .toc-wrap h2{font-size:20px;font-weight:700;color:var(--blue);margin-bottom:22px;padding-bottom:12px;border-bottom:3px solid var(--blue)}
+        .toc-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+        @media(max-width:600px){.toc-grid{grid-template-columns:1fr}}
+        .toc-item{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:10px;cursor:pointer;text-decoration:none;color:#374151;transition:.15s}
+        .toc-item:hover{background:var(--light);color:var(--blue);text-decoration:none}
+        .toc-num{width:26px;height:26px;background:var(--blue);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+        .toc-label{font-size:13.5px;font-weight:500}
+
+        /* 섹션 */
+        section{background:#fff;border-radius:20px;padding:36px;margin:22px 0;box-shadow:0 2px 12px rgba(0,0,0,.06);page-break-inside:avoid}
+        section h1{font-size:24px;font-weight:900;color:var(--blue);margin-bottom:26px;padding-bottom:12px;border-bottom:3px solid var(--blue);display:flex;align-items:center;gap:10px}
+        section h1 .sec-icon{font-size:26px}
+        section h2{font-size:17px;font-weight:700;color:#1e293b;margin:26px 0 12px;padding-left:12px;border-left:4px solid var(--blue)}
+        section h3{font-size:14px;font-weight:700;color:#374151;margin:18px 0 8px}
+        section p{color:#4b5563;margin-bottom:10px}
+        section ul,section ol{color:#4b5563;padding-left:22px;margin:8px 0}
+        section li{margin-bottom:6px}
+
+        /* 박스 */
+        .box{border-radius:12px;padding:16px 18px;margin:14px 0;border-left:4px solid}
+        .box-title{font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:8px;font-size:13px}
+        .box.tip{background:#eff6ff;border-color:var(--blue)}.box.tip .box-title{color:var(--blue)}
+        .box.warn{background:#fffbeb;border-color:var(--orange)}.box.warn .box-title{color:var(--orange)}
+        .box.success{background:#f0fdf4;border-color:var(--green)}.box.success .box-title{color:var(--green)}
+        .box.danger{background:#fef2f2;border-color:var(--red)}.box.danger .box-title{color:var(--red)}
+        .box.purple{background:#f5f3ff;border-color:var(--indigo)}.box.purple .box-title{color:var(--indigo)}
+
+        /* 단계 */
+        .steps{display:flex;flex-direction:column;gap:10px;margin:14px 0}
+        .step-card{display:flex;gap:14px;align-items:flex-start;background:var(--light);border-radius:12px;padding:14px 16px;border:1px solid var(--border)}
+        .step-num{width:30px;height:30px;background:var(--blue);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0;margin-top:2px}
+        .step-body h4{font-size:14px;font-weight:700;color:#1e293b;margin-bottom:4px}
+        .step-body p,.step-body li{font-size:13px;color:#4b5563}
+
+        /* 표 */
+        table{width:100%;border-collapse:collapse;margin:14px 0;font-size:13px}
+        th{background:var(--blue);color:#fff;padding:10px 13px;text-align:left;font-weight:600}
+        td{padding:9px 13px;border-bottom:1px solid var(--border);color:#374151}
+        tr:nth-child(even) td{background:#fafafa}
+        tr:hover td{background:#eff6ff}
+
+        /* 코드 */
+        code{background:#1e293b;color:#a5f3fc;padding:2px 7px;border-radius:5px;font-family:'Consolas',monospace;font-size:12px}
+
+        /* 뱃지 */
+        .badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:700;margin:0 2px}
+        .badge-blue{background:#dbeafe;color:var(--blue)}
+        .badge-green{background:#d1fae5;color:var(--green)}
+        .badge-orange{background:#fef3c7;color:var(--orange)}
+        .badge-red{background:#fee2e2;color:var(--red)}
+        .badge-purple{background:#ede9fe;color:var(--indigo)}
+
+        /* 2단 그리드 */
+        .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}
+        @media(max-width:600px){.grid2{grid-template-columns:1fr}}
+        .mini-card{background:var(--light);border:1px solid var(--border);border-radius:12px;padding:14px}
+        .mini-card h4{font-size:13px;font-weight:700;color:#1e293b;margin-bottom:6px}
+        .mini-card p{font-size:12px;color:#4b5563;margin:0}
+
+        /* 포인트 표시 */
+        .point-pill{display:inline-flex;align-items:center;gap:6px;background:#fef3c7;border:1px solid #fcd34d;border-radius:20px;padding:4px 12px;font-size:13px;font-weight:700;color:#92400e}
+
+        /* PDF 저장 버튼 */
+        .print-btn{
+            position:fixed;bottom:28px;right:28px;
+            background:linear-gradient(135deg,var(--blue),var(--indigo));
+            color:#fff;border:none;padding:13px 22px;border-radius:50px;
+            font-size:14px;font-weight:700;cursor:pointer;
+            box-shadow:0 6px 20px rgba(26,86,219,.35);transition:.2s;z-index:999;
+            display:flex;align-items:center;gap:8px;
+        }
+        .print-btn:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(26,86,219,.45)}
+
+        /* 마지막 페이지 */
+        .ending{text-align:center;padding:80px 40px;background:#fff;border-radius:20px;margin:22px 0}
+        .ending .ending-logo{width:80px;height:80px;background:linear-gradient(135deg,var(--blue),var(--indigo));border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:40px;font-weight:900;color:#fff;margin:0 auto 24px}
+        .ending h2{font-size:22px;font-weight:700;color:var(--blue);margin-bottom:12px}
+        .ending p{color:#6b7280;font-size:14px}
+
+        /* 인쇄 */
+        @media print{
+            body{background:#fff}
+            .print-btn{display:none}
+            section,.step-card,.box,table{page-break-inside:avoid}
+            section{box-shadow:none;border:1px solid #e5e7eb;margin:10px 0}
+            .cover{page-break-after:always}
+        }
+    </style>
+</head>
+<body>
+
+<!-- ════════ 표지 ════════ -->
+<div class="cover">
+    <div class="cover-logo">A</div>
+    <div class="cover-en">Assistant For Teachers' Educational Requirements</div>
+    <h1>AFTER</h1>
+    <div class="cover-sub">사용자 매뉴얼</div>
+    <div class="cover-divider"></div>
+    <div class="cover-meta">
+        <p><strong>버전 3.2</strong> &nbsp;|&nbsp; 최종 수정: 2026년 4월 21일</p>
+        <p>AI 기반 교사 행정 업무 도우미</p>
+    </div>
+</div>
+
+<div class="page-wrap">
+
+<!-- ════════ 목차 ════════ -->
+<div class="toc-wrap">
+    <h2>📋 목차</h2>
+    <div class="toc-grid">
+        <a href="#s1" class="toc-item"><span class="toc-num">1</span><span class="toc-label">AFTER 소개 및 시작</span></a>
+        <a href="#s2" class="toc-item"><span class="toc-num">2</span><span class="toc-label">회원가입 및 로그인</span></a>
+        <a href="#s3" class="toc-item"><span class="toc-num">3</span><span class="toc-label">AI에게 질문하기</span></a>
+        <a href="#s4" class="toc-item"><span class="toc-num">4</span><span class="toc-label">대화 이어가기 · 파일 첨부</span></a>
+        <a href="#s5" class="toc-item"><span class="toc-num">5</span><span class="toc-label">서식 자료실 이용</span></a>
+        <a href="#s6" class="toc-item"><span class="toc-num">6</span><span class="toc-label">질문 히스토리 조회</span></a>
+        <a href="#s7" class="toc-item"><span class="toc-num">7</span><span class="toc-label">게시판 이용 (비밀글·검색)</span></a>
+        <a href="#s8" class="toc-item"><span class="toc-num">8</span><span class="toc-label">접속 회원 · 쪽지 · 채팅</span></a>
+        <a href="#s9" class="toc-item"><span class="toc-num">9</span><span class="toc-label">포인트 관리</span></a>
+        <a href="#s10" class="toc-item"><span class="toc-num">10</span><span class="toc-label">자주 묻는 질문 (FAQ)</span></a>
+    </div>
+</div>
+
+<!-- ════════ 1. 소개 ════════ -->
+<section id="s1">
+    <h1><span class="sec-icon">🏫</span>1. AFTER 소개 및 시작</h1>
+
+    <h2>1.1 AFTER란?</h2>
+    <p><strong>AFTER</strong>는 경상남도 중·고등학교 교감 선생님의 행정 업무를 AI가 즉시 도와드리는 웹 시스템입니다. 복무·인사·교육과정·서식 등 1,800개 이상의 교육행정 서식과 Google Gemini AI 질의응답을 제공합니다.</p>
+
+    <div class="grid2">
+        <div class="mini-card">
+            <h4>🤖 AI 질문/답변</h4>
+            <p>자연어로 질문하면 즉시 답변 + 관련 서식 다운로드 버튼 제공</p>
+        </div>
+        <div class="mini-card">
+            <h4>📁 서식 자료실</h4>
+            <p>8개 부서별 HWP·PDF·XLSX 등 1,800+ 서식 즉시 다운로드</p>
+        </div>
+        <div class="mini-card">
+            <h4>💬 대화 이어가기</h4>
+            <p>AI와 연속 대화, 파일 첨부 분석 지원</p>
+        </div>
+        <div class="mini-card">
+            <h4>👥 커뮤니티</h4>
+            <p>게시판, 쪽지, 1:1 채팅으로 동료와 소통</p>
+        </div>
+    </div>
+
+    <h2>1.2 접속 방법</h2>
+    <div class="box tip">
+        <div class="box-title">🔗 배포 URL</div>
+        <p>관리자로부터 안내받은 <strong>vip.gensparksite.com</strong> 주소로 접속하세요.</p>
+        <p>주소가 길기 때문에 <strong>브라우저 북마크(즐겨찾기)</strong>에 저장해두면 편리합니다.</p>
+    </div>
+
+    <h2>1.3 권장 환경</h2>
+    <table>
+        <thead><tr><th>항목</th><th>권장 사양</th></tr></thead>
+        <tbody>
+            <tr><td>브라우저</td><td>Chrome, Edge, Safari (최신 버전) — Internet Explorer 미지원</td></tr>
+            <tr><td>인터넷 속도</td><td>10 Mbps 이상 (파일 다운로드 시 더 빠를수록 좋음)</td></tr>
+            <tr><td>기기</td><td>PC, 노트북 권장 / 태블릿·모바일도 지원</td></tr>
+        </tbody>
+    </table>
+</section>
+
+<!-- ════════ 2. 가입·로그인 ════════ -->
+<section id="s2">
+    <h1><span class="sec-icon">🔐</span>2. 회원가입 및 로그인</h1>
+
+    <h2>2.1 회원가입</h2>
+    <div class="steps">
+        <div class="step-card"><div class="step-num">1</div><div class="step-body">
+            <h4>우측 상단 "회원가입" 버튼 클릭</h4>
+            <p>로그인 버튼 옆에 "회원가입" 버튼이 표시됩니다.</p>
+        </div></div>
+        <div class="step-card"><div class="step-num">2</div><div class="step-body">
+            <h4>필수 정보 입력</h4>
+            <ul>
+                <li>아이디 (영문·숫자, 4~20자)</li>
+                <li>비밀번호 (8자 이상, 영문+숫자+특수문자 조합)</li>
+                <li>이름 (실명)</li>
+                <li>이메일</li>
+                <li>학교명</li>
+                <li>개인정보 수집·이용 동의 체크</li>
+            </ul>
+        </div></div>
+        <div class="step-card"><div class="step-num">3</div><div class="step-body">
+            <h4>"회원가입 신청" 버튼 클릭</h4>
+            <p>✅ "회원가입 신청이 완료되었습니다. 관리자 승인 후 로그인 가능합니다." 메시지 확인</p>
+        </div></div>
+        <div class="step-card"><div class="step-num">4</div><div class="step-body">
+            <h4>관리자 승인 대기</h4>
+            <p>승인 완료 후 로그인이 가능합니다. 승인 여부는 관리자에게 직접 문의하세요.</p>
+        </div></div>
+    </div>
+
+    <div class="box warn">
+        <div class="box-title">⚠️ 가입 전 주의</div>
+        <p>이미 사용 중인 아이디로는 가입할 수 없습니다. 가입 후 관리자 승인이 완료되기 전까지는 로그인이 불가능합니다.</p>
+    </div>
+
+    <h2>2.2 로그인</h2>
+    <div class="steps">
+        <div class="step-card"><div class="step-num">1</div><div class="step-body"><h4>우측 상단 "로그인" 버튼 클릭</h4></div></div>
+        <div class="step-card"><div class="step-num">2</div><div class="step-body"><h4>아이디·비밀번호 입력 후 "로그인" 클릭 또는 Enter</h4></div></div>
+        <div class="step-card"><div class="step-num">3</div><div class="step-body">
+            <h4>로그인 완료</h4>
+            <p>상단 버튼이 아이디·포인트 배지로 바뀌고 모든 기능 이용 가능</p>
+        </div></div>
+    </div>
+
+    <div class="box tip">
+        <div class="box-title">💡 자동 로그인</div>
+        <p>로그인 상태는 브라우저를 닫아도 유지됩니다. 다른 사람과 공용 PC를 사용한다면 이용 후 반드시 <strong>로그아웃</strong>하세요.</p>
+    </div>
+
+    <h2>2.3 로그아웃 / 비밀번호 변경</h2>
+    <ul>
+        <li><strong>로그아웃</strong>: 상단 아이디 버튼 클릭 → 프로필 메뉴 → "로그아웃"</li>
+        <li><strong>비밀번호 변경</strong>: 프로필 메뉴 → "비밀번호 변경"</li>
+        <li><strong>비밀번호 분실</strong>: 관리자에게 초기화 요청</li>
+    </ul>
+</section>
+
+<!-- ════════ 3. AI 질문 ════════ -->
+<section id="s3">
+    <h1><span class="sec-icon">🤖</span>3. AI에게 질문하기</h1>
+
+    <h2>3.1 질문 방법</h2>
+    <div class="steps">
+        <div class="step-card"><div class="step-num">1</div><div class="step-body">
+            <h4>사이드바에서 질문할 부서 선택</h4>
+            <p>교감업무 / 교무부 / 과정·평가부 / 연구부 / 인성부 / 정보부 / 과학영재수학환경부 / 체육·안전부</p>
+        </div></div>
+        <div class="step-card"><div class="step-num">2</div><div class="step-body">
+            <h4>질문 입력창에 질문 입력</h4>
+            <p>예: "복무 관련 서식 있어요?", "교원 연수 계획서 작성 방법 알려주세요"</p>
+        </div></div>
+        <div class="step-card"><div class="step-num">3</div><div class="step-body"><h4>"AI에게 물어보기" 버튼 클릭</h4><p>AI가 답변 생성 중임을 표시합니다. (보통 3~10초)</p></div></div>
+        <div class="step-card"><div class="step-num">4</div><div class="step-body">
+            <h4>답변 확인</h4>
+            <p>마크다운 형식의 답변 + 관련 서식 다운로드 버튼이 표시됩니다.</p>
+        </div></div>
+    </div>
+
+    <div class="box warn">
+        <div class="box-title">⚠️ 포인트 차감</div>
+        <p>AI 질문 1회당 <span class="point-pill">−5 P</span> 차감됩니다. VIP 회원은 무제한 무료입니다.</p>
+    </div>
+
+    <h2>3.2 검색 모드</h2>
+    <table>
+        <thead><tr><th>모드</th><th>검색 범위</th><th>속도</th><th>추천 상황</th></tr></thead>
+        <tbody>
+            <tr><td><span class="badge badge-blue">빠른 검색</span></td><td>선택 부서만</td><td>⚡ 빠름</td><td>특정 부서 서식이 명확할 때</td></tr>
+            <tr><td><span class="badge badge-green">정밀 검색</span></td><td>전체 8개 부서</td><td>🔍 느림</td><td>어느 부서인지 모를 때</td></tr>
+        </tbody>
+    </table>
+
+    <h2>3.3 답변 활용</h2>
+    <ul>
+        <li><strong>📥 다운로드 버튼</strong>: 답변에 포함된 서식 즉시 다운로드</li>
+        <li><strong>📋 복사 버튼</strong>: 답변 전체 텍스트 클립보드 복사</li>
+        <li><strong>👍 / 👎 피드백</strong>: AI 답변 품질 평가 (향상에 활용)</li>
+    </ul>
+
+    <div class="box tip">
+        <div class="box-title">💡 더 정확한 답변을 받으려면</div>
+        <ul>
+            <li>❌ "서식 있어?" → ✅ "교원 복무 관리 대장 서식 있어요?"</li>
+            <li>❌ "알려줘" → ✅ "2026년 교육과정 편성 절차 단계별로 알려주세요"</li>
+            <li>부서를 정확히 선택하면 더 빠르고 정확한 답변을 받을 수 있습니다.</li>
+        </ul>
+    </div>
+</section>
+
+<!-- ════════ 4. 대화 이어가기 ════════ -->
+<section id="s4">
+    <h1><span class="sec-icon">💬</span>4. 대화 이어가기 · 파일 첨부</h1>
+
+    <h2>4.1 추가 질문 (대화 이어가기)</h2>
+    <p>AI 답변을 받은 후 하단 <strong>"추가 질문 · 대화 이어가기"</strong> 섹션에서 바로 이어서 질문할 수 있습니다. AI는 이전 대화 전체를 기억합니다.</p>
+    <div class="steps">
+        <div class="step-card"><div class="step-num">1</div><div class="step-body"><h4>답변 하단으로 스크롤</h4></div></div>
+        <div class="step-card"><div class="step-num">2</div><div class="step-body">
+            <h4>추가 질문 입력 → Enter 또는 전송 버튼</h4>
+            <p>줄바꿈은 <strong>Shift+Enter</strong></p>
+        </div></div>
+        <div class="step-card"><div class="step-num">3</div><div class="step-body"><h4>채팅 형식으로 대화 이어짐</h4></div></div>
+    </div>
+
+    <div class="box tip">
+        <div class="box-title">💡 관련 파일 버튼 유지</div>
+        <p>추가 질문을 이어가더라도 이전 답변에 있던 <strong>관련 파일 다운로드 버튼은 계속 표시</strong>됩니다. 파일을 다시 찾을 필요가 없습니다.</p>
+    </div>
+
+    <h2>4.2 파일 첨부 분석</h2>
+    <p>PDF, HWP, DOCX, XLSX, PPTX, 이미지 파일을 첨부하면 AI가 파일 내용을 분석하여 답변합니다.</p>
+    <div class="steps">
+        <div class="step-card"><div class="step-num">1</div><div class="step-body"><h4>입력창 왼쪽 📎 (클립) 버튼 클릭</h4></div></div>
+        <div class="step-card"><div class="step-num">2</div><div class="step-body"><h4>분석할 파일 선택 (크기 제한 없음)</h4></div></div>
+        <div class="step-card"><div class="step-num">3</div><div class="step-body">
+            <h4>파일 관련 질문 입력 → 전송</h4>
+            <ul>
+                <li>"첨부 파일을 요약해주세요"</li>
+                <li>"이 서식 양식처럼 만들어주세요"</li>
+                <li>"첨부된 공문의 주요 내용이 뭔가요?"</li>
+            </ul>
+        </div></div>
+    </div>
+
+    <table>
+        <thead><tr><th>지원 형식</th><th>최대 크기</th></tr></thead>
+        <tbody>
+            <tr><td>PDF, HWP, HWPX, DOCX, DOC, XLSX, XLS, PPTX, PPT</td><td rowspan="2">20 MB</td></tr>
+            <tr><td>이미지: JPG, PNG, GIF, BMP, WEBP</td></tr>
+        </tbody>
+    </table>
+</section>
+
+<!-- ════════ 5. 자료실 ════════ -->
+<section id="s5">
+    <h1><span class="sec-icon">📁</span>5. 서식 자료실 이용</h1>
+
+    <h2>5.1 자료실 접속</h2>
+    <div class="steps">
+        <div class="step-card"><div class="step-num">1</div><div class="step-body"><h4>사이드바 → "자료실" 탭 클릭</h4></div></div>
+        <div class="step-card"><div class="step-num">2</div><div class="step-body">
+            <h4>전체 서식 수 표시</h4>
+            <p>처음 접속 시 전체 서식 수만 표시됩니다 (로딩 시간 단축).</p>
+        </div></div>
+        <div class="step-card"><div class="step-num">3</div><div class="step-body">
+            <h4>부서 버튼 클릭</h4>
+            <p>원하는 부서 버튼을 클릭하면 해당 부서 서식만 로드됩니다.</p>
+        </div></div>
+    </div>
+
+    <div class="box tip">
+        <div class="box-title">💡 lazy loading 방식</div>
+        <p>자료실은 처음에 전체 건수만 표시하고, 부서 버튼을 클릭할 때만 해당 부서 파일을 불러옵니다. 이전보다 훨씬 빠르게 원하는 자료를 찾을 수 있습니다.</p>
+    </div>
+
+    <h2>5.2 검색</h2>
+    <p>상단 검색창에 키워드를 입력하면 서식명·설명에서 해당 키워드를 포함한 파일만 표시됩니다.</p>
+    <ul>
+        <li>예: "복무" → 복무 관련 파일만</li>
+        <li>예: "출결" → 출결 관련 파일만</li>
+    </ul>
+
+    <h2>5.3 파일 다운로드</h2>
+    <div class="steps">
+        <div class="step-card"><div class="step-num">1</div><div class="step-body"><h4>파일 카드에서 "📥 다운로드" 버튼 클릭</h4></div></div>
+        <div class="step-card"><div class="step-num">2</div><div class="step-body"><h4>브라우저 다운로드 폴더에 파일 저장됨</h4></div></div>
+    </div>
+
+    <div class="box warn">
+        <div class="box-title">⚠️ 포인트 차감</div>
+        <p>파일 다운로드 1회당 <span class="point-pill">−10 P</span> 차감됩니다. VIP 회원은 무제한 무료입니다.</p>
+    </div>
+
+    <h2>5.4 지원 파일 형식</h2>
+    <table>
+        <thead><tr><th>아이콘</th><th>형식</th><th>프로그램</th></tr></thead>
+        <tbody>
+            <tr><td>📘</td><td>HWP, HWPX</td><td>한글 워드프로세서</td></tr>
+            <tr><td>📕</td><td>PDF</td><td>PDF 뷰어 (브라우저 내장 가능)</td></tr>
+            <tr><td>📗</td><td>XLSX, XLS</td><td>Microsoft Excel</td></tr>
+            <tr><td>📄</td><td>DOCX, DOC</td><td>Microsoft Word</td></tr>
+            <tr><td>📊</td><td>PPTX, PPT</td><td>Microsoft PowerPoint</td></tr>
+        </tbody>
+    </table>
+</section>
+
+<!-- ════════ 6. 히스토리 ════════ -->
+<section id="s6">
+    <h1><span class="sec-icon">🕐</span>6. 질문 히스토리 조회</h1>
+
+    <h2>6.1 히스토리 보기</h2>
+    <div class="steps">
+        <div class="step-card"><div class="step-num">1</div><div class="step-body"><h4>사이드바 → "히스토리" 탭 클릭</h4></div></div>
+        <div class="step-card"><div class="step-num">2</div><div class="step-body">
+            <h4>대화 목록 확인</h4>
+            <p>내가 질문한 기록은 질문·답변·파일 버튼이 모두 표시됩니다.</p>
+            <p>다른 사용자의 기록은 <strong>제목(질문)과 요약만 표시</strong>됩니다. (개인정보 보호)</p>
+        </div></div>
+    </div>
+
+    <div class="box purple">
+        <div class="box-title">🔒 타인 히스토리 표시 정책</div>
+        <p>다른 사람이 질문한 히스토리는 제목과 부서 정보만 표시됩니다. 답변 내용과 관련 파일 버튼은 본인만 열람할 수 있습니다.</p>
+    </div>
+
+    <h2>6.2 필터링 및 검색</h2>
+    <ul>
+        <li><strong>부서 탭</strong>: 상단 부서 버튼 클릭으로 특정 부서 기록만 표시</li>
+        <li><strong>키워드 검색</strong>: 검색창에 키워드 입력으로 관련 기록만 표시</li>
+    </ul>
+
+    <h2>6.3 이전 대화 다시 불러오기</h2>
+    <div class="steps">
+        <div class="step-card"><div class="step-num">1</div><div class="step-body"><h4>히스토리 카드의 "🔄 다시 질문" 버튼 클릭</h4></div></div>
+        <div class="step-card"><div class="step-num">2</div><div class="step-body">
+            <h4>원본 답변 화면으로 이동</h4>
+            <p>질문, AI 답변, <strong>관련 파일 다운로드 버튼이 모두 복원</strong>됩니다.</p>
+        </div></div>
+        <div class="step-card"><div class="step-num">3</div><div class="step-body"><h4>필요 시 대화 이어가기 가능</h4></div></div>
+    </div>
+
+    <div class="box tip">
+        <div class="box-title">💡 히스토리 저장 기간</div>
+        <p>최근 <strong>100건</strong>의 대화가 저장됩니다. 100건을 초과하면 가장 오래된 기록부터 자동 삭제됩니다.</p>
+    </div>
+
+    <h2>6.4 피드백</h2>
+    <p>답변 하단의 <strong>👍 좋아요</strong> 또는 <strong>👎 별로예요</strong> 버튼으로 AI 답변 품질을 평가해주세요. 더 나은 답변 개선에 활용됩니다.</p>
+</section>
+
+<!-- ════════ 7. 게시판 ════════ -->
+<section id="s7">
+    <h1><span class="sec-icon">📋</span>7. 게시판 이용</h1>
+
+    <h2>7.1 게시판 접속</h2>
+    <p>사이드바 → <strong>"게시판"</strong> 탭 클릭</p>
+
+    <h2>7.2 게시글 검색</h2>
+    <p>게시판 상단 검색창에서 <strong>제목, 내용, 관리자 답변 텍스트</strong>를 통합 검색할 수 있습니다.</p>
+    <ul>
+        <li>검색어는 목록에서 <mark style="background:#fef08a;padding:0 3px;border-radius:3px;">노란색</mark>으로 하이라이트됩니다.</li>
+        <li>관리자 답변에서 검색어가 일치하면 목록에 파란색 미리보기로 표시됩니다.</li>
+        <li>검색 결과 건수가 상단에 표시됩니다.</li>
+    </ul>
+
+    <h2>7.3 게시글 읽기</h2>
+    <ul>
+        <li>게시글 제목 클릭 → 전체 내용 표시</li>
+        <li><span class="badge badge-blue">💬 일반</span> <span class="badge badge-orange">💡 제안</span> <span class="badge badge-red">❓ 문의</span> <span class="badge badge-green">📂 자료요청</span> <span class="badge badge-red">🚨 파일오류신고</span></li>
+        <li><span class="badge badge-purple">🔒 비밀글</span> 비밀글은 작성자 본인과 관리자만 열람 가능</li>
+    </ul>
+
+    <h2>7.4 게시글 작성</h2>
+    <div class="steps">
+        <div class="step-card"><div class="step-num">1</div><div class="step-body"><h4>우측 상단 "✏️ 글쓰기" 버튼 클릭 (로그인 필요)</h4></div></div>
+        <div class="step-card"><div class="step-num">2</div><div class="step-body">
+            <h4>카테고리 선택</h4>
+            <ul>
+                <li>💬 일반: 자유로운 의견</li>
+                <li>💡 제안: 시스템 개선 제안</li>
+                <li>❓ 문의: 사용 방법 문의</li>
+                <li>📂 자료 요청: 필요한 서식 요청</li>
+                <li>🚨 파일 오류 신고: 파일 오류·시스템 버그</li>
+            </ul>
+        </div></div>
+        <div class="step-card"><div class="step-num">3</div><div class="step-body"><h4>제목·내용 입력</h4></div></div>
+        <div class="step-card"><div class="step-num">4</div><div class="step-body">
+            <h4>(선택) 비밀글 체크</h4>
+            <p>🔒 비밀글로 작성하면 제목은 공개되지만 내용은 작성자·관리자만 열람 가능합니다.</p>
+        </div></div>
+        <div class="step-card"><div class="step-num">5</div><div class="step-body"><h4>"등록" 버튼 클릭</h4></div></div>
+    </div>
+
+    <h2>7.5 관리자 답변 확인</h2>
+    <p>관리자가 답변한 게시글은 목록에 <span class="badge badge-blue">💬 답변완료</span> 배지가 표시됩니다. 게시글을 클릭하면 파란색 박스로 관리자 공식 답변을 확인할 수 있습니다.</p>
+
+    <h2>7.6 비밀글 정책</h2>
+    <table>
+        <thead><tr><th>구분</th><th>일반 사용자</th><th>작성자 본인</th><th>관리자</th></tr></thead>
+        <tbody>
+            <tr><td>목록에서 제목</td><td>🔒 아이콘과 함께 표시</td><td>표시됨</td><td>표시됨</td></tr>
+            <tr><td>게시글 본문</td><td>접근 불가</td><td>열람 가능</td><td>열람 가능</td></tr>
+            <tr><td>관리자 답변</td><td>열람 불가</td><td>열람 가능</td><td>작성·수정·삭제 가능</td></tr>
+        </tbody>
+    </table>
+</section>
+
+<!-- ════════ 8. 접속회원·쪽지·채팅 ════════ -->
+<section id="s8">
+    <h1><span class="sec-icon">👥</span>8. 접속 회원 · 쪽지 · 채팅</h1>
+
+    <h2>8.1 접속 회원 목록</h2>
+    <p>홈 화면 우측 패널에 현재 접속 중인 회원 목록이 실시간으로 표시됩니다.</p>
+    <ul>
+        <li>🟢 초록색 점: 최근 3분 이내 활성 상태</li>
+        <li>👑 왕관 배지: 관리자</li>
+        <li>⭐ 별 배지: VIP 회원</li>
+        <li>접속 목록은 <strong>1분마다 자동 갱신</strong>됩니다.</li>
+        <li>새로고침 후에도 내 접속 상태가 유지됩니다.</li>
+    </ul>
+
+    <h2>8.2 쪽지 보내기</h2>
+    <div class="steps">
+        <div class="step-card"><div class="step-num">1</div><div class="step-body"><h4>접속 회원 목록에서 쪽지를 보낼 회원 우클릭</h4></div></div>
+        <div class="step-card"><div class="step-num">2</div><div class="step-body"><h4>"쪽지 보내기" 선택</h4></div></div>
+        <div class="step-card"><div class="step-num">3</div><div class="step-body"><h4>내용 입력 (최대 500자) → "전송" 클릭</h4></div></div>
+    </div>
+
+    <h2>8.3 받은 쪽지 확인</h2>
+    <div class="steps">
+        <div class="step-card"><div class="step-num">1</div><div class="step-body">
+            <h4>상단 "✉️" 아이콘 클릭</h4>
+            <p>읽지 않은 쪽지가 있으면 빨간 숫자 배지가 표시됩니다.</p>
+        </div></div>
+        <div class="step-card"><div class="step-num">2</div><div class="step-body"><h4>받은 쪽지함 / 보낸 쪽지함 탭 전환</h4></div></div>
+        <div class="step-card"><div class="step-num">3</div><div class="step-body"><h4>쪽지 클릭 → 내용 확인 → 필요 시 "답장" 클릭</h4></div></div>
+    </div>
+
+    <h2>8.4 1:1 채팅</h2>
+    <div class="steps">
+        <div class="step-card"><div class="step-num">1</div><div class="step-body"><h4>접속 회원 목록에서 채팅할 회원 우클릭 → "대화하기"</h4></div></div>
+        <div class="step-card"><div class="step-num">2</div><div class="step-body"><h4>채팅창 팝업 → 메시지 입력 → Enter 또는 전송 버튼</h4></div></div>
+    </div>
+
+    <div class="box tip">
+        <div class="box-title">💡 채팅 자동 새로고침</div>
+        <p>채팅창은 8초마다 자동으로 새로운 메시지를 확인합니다.</p>
+    </div>
+</section>
+
+<!-- ════════ 9. 포인트 ════════ -->
+<section id="s9">
+    <h1><span class="sec-icon">💰</span>9. 포인트 관리</h1>
+
+    <h2>9.1 포인트란?</h2>
+    <p>AFTER의 주요 기능 이용 시 포인트가 차감됩니다. 포인트가 부족하면 해당 기능이 제한됩니다.</p>
+
+    <table>
+        <thead><tr><th>이벤트</th><th>포인트 변동</th></tr></thead>
+        <tbody>
+            <tr><td>회원 승인 시 자동 지급</td><td><strong>+1,000 P</strong></td></tr>
+            <tr><td>서식 다운로드</td><td>−10 P (VIP는 무료)</td></tr>
+            <tr><td>AI 질문</td><td>−5 P (VIP는 무료)</td></tr>
+        </tbody>
+    </table>
+
+    <h2>9.2 내 포인트 확인</h2>
+    <p>로그인 후 상단 아이디 버튼 옆에 <span class="point-pill">💎 포인트</span> 배지가 표시됩니다.</p>
+
+    <h2>9.3 포인트 부족 시</h2>
+    <div class="box warn">
+        <div class="box-title">⚠️ 포인트 0 이하</div>
+        <p>포인트가 0이 되면 서식 다운로드와 AI 질문이 제한됩니다. 관리자에게 연락하여 포인트 충전을 요청하세요.</p>
+    </div>
+
+    <h2>9.4 VIP 등급</h2>
+    <p>관리자가 VIP로 지정하면 포인트 차감 없이 <strong>모든 기능을 무제한</strong> 사용할 수 있습니다. 프로필에 <span class="badge badge-purple">⭐ VIP</span> 배지가 표시됩니다.</p>
+</section>
+
+<!-- ════════ 10. FAQ ════════ -->
+<section id="s10">
+    <h1><span class="sec-icon">❓</span>10. 자주 묻는 질문 (FAQ)</h1>
+
+    <h3>Q1. 회원가입 후 로그인이 안 돼요.</h3>
+    <p><strong>A.</strong> 회원가입 후 관리자의 승인이 필요합니다. 승인 전까지는 로그인이 제한됩니다. 관리자에게 승인 요청 문의를 하세요.</p>
+
+    <h3>Q2. AI 답변이 느려요 / 오류가 납니다.</h3>
+    <p><strong>A.</strong> Gemini API 사용량 한도(분당 15회)를 초과했을 수 있습니다. 1~2분 후 다시 시도하세요. 계속 오류 발생 시 관리자에게 문의하세요.</p>
+
+    <h3>Q3. 파일 다운로드가 안 돼요.</h3>
+    <ul>
+        <li>포인트 잔액 확인 (다운로드 1회당 −10P)</li>
+        <li>브라우저 팝업 차단 설정 확인</li>
+        <li>인터넷 연결 상태 확인</li>
+        <li>파일 용량이 크면 시간이 걸릴 수 있음</li>
+    </ul>
+
+    <h3>Q4. 게시판 비밀글을 읽을 수 없어요.</h3>
+    <p><strong>A.</strong> 비밀글은 <strong>작성자 본인과 관리자만</strong> 열람할 수 있습니다. 내 글이 아닌 비밀글은 제목만 표시됩니다.</p>
+
+    <h3>Q5. 히스토리에서 다른 사람 답변이 안 보여요.</h3>
+    <p><strong>A.</strong> 개인정보 보호를 위해 타인의 히스토리는 질문 제목만 표시되며, AI 답변과 관련 파일은 본인에게만 표시됩니다.</p>
+
+    <h3>Q6. 자료실에서 파일이 안 보여요.</h3>
+    <p><strong>A.</strong> 자료실은 부서별 클릭 시 로드됩니다. 상단의 부서 버튼을 클릭해보세요. 전체 버튼을 클릭하면 모든 서식이 로드됩니다.</p>
+
+    <h3>Q7. 접속 회원 목록에 내가 안 보여요.</h3>
+    <p><strong>A.</strong> 접속 상태는 1분마다 자동으로 갱신됩니다. 로그인 후 잠시 기다리면 목록에 표시됩니다.</p>
+
+    <h3>Q8. 비밀번호를 잊어버렸어요.</h3>
+    <p><strong>A.</strong> 관리자에게 비밀번호 초기화를 요청하세요.</p>
+
+    <h3>Q9. 모바일에서도 사용 가능한가요?</h3>
+    <p><strong>A.</strong> 네, 모바일 브라우저에서도 사용 가능합니다. 다만 PC·노트북 환경에서 최적화되어 있습니다.</p>
+
+    <h3>Q10. 포인트가 부족한데 서식이 급히 필요해요.</h3>
+    <p><strong>A.</strong> 관리자에게 연락하면 포인트를 즉시 충전받을 수 있습니다. 또는 AI 질문으로 해당 서식이 자료실에 있는지 확인하세요.</p>
+
+    <div class="box tip">
+        <div class="box-title">📞 문의 및 지원</div>
+        <p>위 FAQ로 해결이 안 되는 경우, 게시판 <strong>❓ 문의</strong> 카테고리에 글을 남기거나 관리자에게 직접 쪽지를 보내주세요.</p>
+        <p style="margin-top:8px;"><strong>개발:</strong> 김정석 &nbsp;|&nbsp; <strong>버전:</strong> 3.2 &nbsp;|&nbsp; <strong>최종 업데이트:</strong> 2026년 4월 21일</p>
+    </div>
+</section>
+
+<!-- 마지막 페이지 -->
+<div class="ending">
+    <div class="ending-logo">A</div>
+    <h2>AFTER와 함께</h2>
+    <p>효율적인 교육행정 업무를 경험하세요</p>
+    <p style="margin-top:24px;font-size:12px;color:#9ca3af;">본 매뉴얼은 AFTER v3.2 기준으로 작성되었습니다.<br>시스템 업데이트에 따라 일부 내용이 변경될 수 있습니다.</p>
+</div>
+
+</div><!-- /page-wrap -->
+
+<!-- PDF 저장 버튼 -->
+<button class="print-btn" onclick="window.print()">🖨️ PDF로 저장</button>
+
+<script>
+document.querySelectorAll('.toc-item').forEach(item => {
+    item.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) target.scrollIntoView({behavior:'smooth', block:'start'});
+    });
+});
+</script>
+<script src="https://www.genspark.ai/sandbox_inspect.js"></script></body>
+</html>
